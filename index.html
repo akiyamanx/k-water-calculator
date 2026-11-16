@@ -546,8 +546,8 @@ footer b{color:var(--ink)}
 
   <div class="ctl"><label>給水パターン</label>
     <div class="seg" id="segTmode">
-      <button data-v="always" class="active" onclick="setTmode('always')">常時給水<br><span style="font-weight:400;font-size:9.5px">水量・圧力が弱い</span></button>
-      <button data-v="limited" onclick="setTmode('limited')">時間限定<br><span style="font-weight:400;font-size:9.5px">夜間・タイマー・井戸</span></button>
+      <button data-v="always" class="active" onclick="setTmode('always')">常時給水<br><span style="display:block;font-weight:400;font-size:9.5px">水量・圧力が弱い</span></button>
+      <button data-v="limited" onclick="setTmode('limited')">時間限定<br><span style="display:block;font-weight:400;font-size:9.5px">夜間・タイマー・井戸</span></button>
     </div>
     <div class="hint">時間限定＝運転時間帯に給水が来ない想定（タンクに1回分ためる運用）</div></div>
 
@@ -820,7 +820,7 @@ function calcRO(){
   const pReq=pRequired(n,t,tds,rec,goal);
   let flag,cls,msg;
   if(goal<=r.perm){flag='達 成 可 能';cls='ok';
-  msg=`目標 ${fmt(goal)} L/h は今の設定で作れます（余裕 ${fmt(r.perm-goal)} L/h）。このままか、余裕を活かして圧力を下げられます。`;}
+    msg=`目標 ${fmt(goal)} L/h は今の設定で作れます（余裕 ${fmt(r.perm-goal)} L/h）。このままか、余裕を活かして圧力を下げられます。`;}
   else if(pReq<=PMAX){flag='圧 力 不 足';cls='warn';
     msg=`今の圧力では足りません。流入圧を <b class="mono">${pReq.toFixed(2)} MPa</b> まで上げれば目標達成の見込み。0.05MPa刻みで上げて透過水量を確認。`;}
   else{const M=MEMB[membType];
