@@ -7,3 +7,1342 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#101014;
+  --paper:#ffffff;
+  --accent:#2f5fd0;
+  --warn:#c2571f;
+  --danger:#9c2b12;
+  --faint:#6b6b72;
+  --line:1px solid var(--ink);
+  --mono:'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  --sans:'Inter','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);font-size:14px;line-height:1.55}
+.mono{font-family:var(--mono);font-feature-settings:'tnum' 1;letter-spacing:-0.01em}
+.barlabel{width:130px;font-size:11px;font-weight:600}
+.barval{width:90px;text-align:right;font-weight:600}
+
+header{display:grid;grid-template-columns:auto 1fr auto;align-items:stretch;border-bottom:var(--line)}
+.brand{padding:14px 18px;border-right:var(--line)}
+.brand h1{font-size:17px;font-weight:800;letter-spacing:0.04em}
+.brand .sub{font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--faint);margin-top:2px}
+.tabs{display:flex;align-items:stretch}
+.tabs button{appearance:none;border:none;border-right:var(--line);background:var(--paper);font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:0.06em;padding:0 22px;cursor:pointer;color:var(--ink)}
+.tabs button.active{background:var(--ink);color:var(--paper)}
+.tabs button:not(.active):hover{background:#f1f1f3}
+.printbtn{appearance:none;border:none;border-left:var(--line);background:var(--paper);font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:0.12em;padding:0 22px;cursor:pointer}
+.printbtn:hover{background:var(--ink);color:var(--paper)}
+
+main{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 118px)}
+aside{border-right:var(--line);min-width:0}
+section.results{border-right:var(--line);min-width:0}
+.mwrap{min-width:0}
+
+.ptitle{font-size:10px;font-weight:600;letter-spacing:0.24em;text-transform:uppercase;padding:10px 14px 8px;color:var(--faint);border-bottom:var(--line);background:#fafafa}
+.ptitle.dark{background:var(--ink);color:var(--paper)}
+
+.ctl{padding:12px 14px;border-bottom:var(--line)}
+.ctl label{display:block;font-size:11px;font-weight:600;letter-spacing:0.08em;margin-bottom:6px}
+.ctl details.srcnote{margin:0;padding:10px 14px;border-top:var(--line);font-size:11px;line-height:1.7;color:var(--ink)}
+details.srcnote summary{cursor:pointer;font-weight:600;color:var(--accent);font-size:11.5px}
+details.srcnote ol{margin:6px 0;padding:0 0 0 18px}
+details.srcnote li{margin:4px 0}
+details.srcnote p{margin:6px 0}
+.hint{font-size:10.5px;color:var(--faint);margin-top:4px}
+.ctl .val{font-family:var(--mono);font-size:13px;font-weight:600;margin-left:6px}
+.seg{display:flex;border:var(--line)}
+.seg button{flex:1;appearance:none;border:none;background:var(--paper);cursor:pointer;font-family:var(--sans);font-size:11.5px;font-weight:600;padding:8px 4px}
+.seg button + button{border-left:var(--line)}
+.seg button.active{background:var(--ink);color:var(--paper)}
+input[type=number],select{width:100%;border:var(--line);background:var(--paper);font-family:var(--mono);font-size:15px;font-weight:600;padding:7px 9px;-moz-appearance:textfield}
+input[type=number]:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+.stepper{display:flex;border:var(--line)}
+.stepper button{width:38px;appearance:none;border:none;background:var(--paper);cursor:pointer;font-family:var(--mono);font-size:17px;font-weight:600}
+.stepper button:hover{background:var(--ink);color:var(--paper)}
+.stepper input{border:none !important;text-align:center;font-size:16px}
+.stepper input:focus{outline:none}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;background:var(--paper);border:var(--line);margin-top:-7px}
+input[type=range]::-moz-range-track{height:1px;background:var(--ink)}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;background:var(--paper);border:var(--line);border-radius:0}
+
+.specstrip{display:flex;flex-wrap:wrap;border-bottom:var(--line)}
+.specstrip .cell{flex:1 1 50%;padding:8px 14px;border-right:var(--line);min-width:120px}
+.specstrip .cell:nth-child(2n){border-right:none}
+.specstrip .k{font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint)}
+.specstrip .v{font-family:var(--mono);font-size:15px;font-weight:600;margin-top:1px}
+
+.outgrid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:var(--line)}
+.outgrid .o{padding:10px 14px;border-right:var(--line);min-width:0}
+.outgrid .o:last-child{border-right:none}
+.outgrid .k{font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint)}
+.outgrid .v{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:2px;white-space:nowrap}
+#dMaxR .v,#dCo2 .v{white-space:normal;font-family:var(--sans)}
+#dMaxR .v{font-size:14px}
+#dCo2 .v{font-size:12.5px;line-height:1.55}
+.outgrid .v small{font-size:11px;font-weight:400;color:var(--faint);font-family:var(--sans)}
+
+.judge{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:var(--line);flex-wrap:wrap}
+.judge .flag{font-size:11px;font-weight:800;letter-spacing:0.14em;padding:4px 12px;border:var(--line);white-space:nowrap}
+.judge .flag.ok{background:var(--accent);color:#fff;border-color:var(--accent)}
+.judge .flag.warn{background:var(--warn);color:#fff;border-color:var(--warn)}
+.judge .flag.danger{background:var(--danger);color:#fff;border-color:var(--danger)}
+.judge .msg{font-size:12px;line-height:1.5}
+
+.mwrap{overflow:auto;max-height:56vh}
+table.mx{border-collapse:collapse;width:100%;font-size:12px}
+table.mx th,table.mx td{border-bottom:1px solid #d8d8dc;border-right:1px solid #d8d8dc;padding:6px 8px;text-align:right;white-space:nowrap}
+table.mx th:first-child,table.mx td:first-child{text-align:left}
+table.mx thead th{position:sticky;top:0;background:var(--ink);color:var(--paper);font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;border-right-color:#3a3a42;border-bottom:none;padding:7px 8px;z-index:2}
+table.mx tbody tr{transition:background .12s}
+table.mx tbody tr:hover{background:#f1f3fa}
+table.mx tbody tr.sel{background:#e7edfb}
+table.mx tbody tr.best td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+table.mx td.num{font-family:var(--mono);font-weight:600}
+table.mx td.hit{background:#cfe0ff !important;box-shadow:inset 0 0 0 1.5px var(--accent)}
+table.mx td.gray{background:#e4e4e8 !important;color:var(--faint)}
+table.mx .ok{color:var(--accent);font-weight:800}
+table.mx .warn{color:var(--warn);font-weight:800}
+table.mx .danger{color:var(--danger);font-weight:800}
+table.mx td .tag{font-size:9.5px;font-weight:700;letter-spacing:0.1em;padding:1px 6px;border:1px solid currentColor}
+
+footer{border-top:var(--line);padding:14px 18px;font-size:11px;color:var(--faint);line-height:1.7}
+footer b{color:var(--ink)}
+.hidden{display:none !important}
+
+@media (max-width:860px){
+  main{grid-template-columns:1fr;min-height:auto}
+  aside{border-right:none;border-bottom:var(--line)}
+  .outgrid{grid-template-columns:repeat(2,1fr)}
+  .outgrid .o:nth-child(2n){border-right:none}
+  .outgrid .o{border-bottom:1px solid #d8d8dc}
+  .brand h1{font-size:14px}
+  .tabs button{padding:0 12px;font-size:12px}
+}
+@media (max-width:640px){
+  body{font-size:13px}
+  header{display:flex;flex-wrap:wrap}
+  .brand{flex:1 1 auto;padding:10px 12px;border-right:none}
+  .printbtn{flex:0 0 auto;border-left:none;border-bottom:var(--line);padding:0 14px}
+  .tabs{flex:1 1 100%;order:3;border-top:var(--line);overflow-x:auto}
+  .tabs button{flex:1 0 auto;min-width:66px;padding:10px 8px;font-size:11px;border-bottom:none}
+  .ptitle{padding:8px 12px 6px}
+  .ctl{padding:10px 12px}
+  .specstrip .cell{flex:1 1 50%;min-width:0;padding:6px 10px}
+  .judge{padding:10px 12px;gap:8px}
+  .judge .msg{font-size:11px}
+  .outgrid .o{padding:8px 10px}
+  .outgrid .v{font-size:16px;white-space:normal}
+  input[type=number],select{font-size:16px} /* iOS自動ズーム防止 */
+  table.mx{font-size:11px}
+  table.mx th,table.mx td{padding:5px 6px}
+  .mwrap{max-height:52vh}
+  footer{padding:10px 12px;font-size:10px}
+  .barlabel{width:86px;font-size:10px}
+  .barval{width:64px;font-size:10.5px}
+}
+@media print{
+  body{font-size:11px}
+  .printbtn,.tabs{display:none}
+  header{grid-template-columns:auto 1fr}
+  .mwrap{max-height:none;overflow:visible}
+  table.mx thead th{position:static}
+  .judge .flag{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>K-Water <span style="font-weight:400;font-size:11.5px">純水装置 設計・運用・早見計算機</span></h1>
+    <div class="sub">設計 / 循環水 / RO 4040 / EDI XL / 受水槽 / 調整ガイド</div>
+  </div>
+  <nav class="tabs">
+    <button id="tabDESIGN" class="active" onclick="switchTab('DESIGN')">設計</button>
+    <button id="tabHW" onclick="switchTab('HW')">循環水</button>
+    <button id="tabRO" onclick="switchTab('RO')">RO 4040</button>
+    <button id="tabEDI" onclick="switchTab('EDI')">EDI XL</button>
+    <button id="tabTANK" onclick="switchTab('TANK')">受水槽</button>
+    <button id="tabTUNE" onclick="switchTab('TUNE')">調整ガイド</button>
+  </nav>
+  <button class="printbtn" onclick="window.print()">印刷</button>
+</header>
+
+<main>
+
+
+  <div id="panelDESIGN" style="display:contents">
+    <aside>
+      <div class="ptitle dark">入力 — 原水水質</div>
+      <details class="srcnote" style="border-top:none">
+        <summary>設計の進め方（実務の流れ順）</summary>
+        <div>
+          <ol>
+            <li><b>用途と必要水質の確認</b>：洗車なら純水。導電率の管理ラインは調整ガイド参照</li>
+            <li><b>原水水質の調査</b>：下の「集め方」参照。全分析モード推奨（イオン収支でデータ品質も確認できる）</li>
+            <li><b>水量の計画</b>：受水槽タブ・RO 4040 タブで 1日の収支と必要本数を確認</li>
+            <li><b>回収率の仮決め</b>：スライダーで 60〜75% あたりから。高いほど排水は減るが濃縮される</li>
+            <li><b>濃縮側リスクの確認</b>：「最大許容回収率」が設計値を下回ったら要対策。薬注・軟水器・脱気で緩和できるか検討</li>
+            <li><b>構成の検討</b>：単段で収まらなければ 2段・2パス。各段のリスクが個別に見える</li>
+            <li><b>前処理の確定</b>：「前処理の提案」をもとに軟水器・脱気・pH調整の有無を決める</li>
+            <li><b>EDIへの影響確認</b>：CO₂が多いと FCE が押し上げられる。脱気か pH 調整で下げられる</li>
+            <li><b>ROタブへ反映</b>：「→ この水質を RO 4040 タブに反映」で本計算へ</li>
+          </ol>
+        </div>
+      </details>
+      <div class="ctl">
+        <label>入力モード</label>
+        <div class="seg" id="segDMode">
+          <button class="active" data-v="full" onclick="setDMode('full')">全分析<span style="display:block;font-weight:400;font-size:9.5px">イオン収支チェック付き</span></button>
+          <button data-v="simple" onclick="setDMode('simple')">簡易<span style="display:block;font-weight:400;font-size:9.5px">TDS・硬度・シリカ</span></button>
+        </div>
+      </div>
+      <div id="dFull">
+        <div class="ctl"><label>カルシウム Ca²⁺（mg/L）</label><input type="number" id="dCa" value="45" step="1" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>マグネシウム Mg²⁺（mg/L）</label><input type="number" id="dMg" value="12" step="1" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>ナトリウム Na⁺（mg/L）</label><input type="number" id="dNa" value="25" step="1" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>カリウム K⁺（mg/L）</label><input type="number" id="dK" value="3" step="0.5" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>炭酸水素 HCO₃⁻（mg/L）</label><input type="number" id="dHco3" value="180" step="1" min="0" oninput="calcDesign()">
+          <div class="hint">検査表が「アルカリ度（CaCO₃換算）」なら ×61÷50 で換算</div></div>
+        <div class="ctl"><label>硫酸イオン SO₄²⁻（mg/L）</label><input type="number" id="dSo4" value="25" step="1" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>塩素イオン Cl⁻（mg/L）</label><input type="number" id="dCl" value="28" step="1" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>硝酸イオン NO₃⁻（mg/L）</label><input type="number" id="dNo3" value="5" step="0.5" min="0" oninput="calcDesign()"></div>
+      </div>
+      <div id="dSimple" style="display:none">
+        <div class="ctl"><label>TDS（mg/L）</label><input type="number" id="dTds" value="260" step="10" min="10" oninput="calcDesign()"></div>
+        <div class="ctl"><label>総硬度（CaCO₃換算 mg/L）</label><input type="number" id="dHard" value="160" step="5" min="0" oninput="calcDesign()"></div>
+        <div class="ctl"><label>アルカリ度（CaCO₃換算 mg/L）</label><input type="number" id="dAlk" value="150" step="5" min="0" oninput="calcDesign()"></div>
+      </div>
+      <div class="ctl"><label>シリカ SiO₂（mg/L）</label><input type="number" id="dSio2" value="8" step="0.5" min="0" oninput="calcDesign()"></div>
+      <div class="ctl"><label>pH</label><input type="number" id="dPh" value="7.2" step="0.1" min="3" max="10" oninput="calcDesign()"></div>
+      <div class="ctl"><label>水温（℃）</label><input type="number" id="dTemp" value="25" step="0.5" min="5" max="40" oninput="calcDesign()"></div>
+      <div class="ctl"><label>水源</label>
+        <select id="dSource" onchange="calcDesign()">
+          <option value="tap" selected>水道水</option>
+          <option value="well">井戸水</option>
+          <option value="other">河川・湖水など</option>
+        </select>
+        <div class="hint">活性炭・ろ過の判定に使う</div></div>
+      <div class="ctl"><label>濁度（NTU・わかる場合のみ）</label><input type="number" id="dTurb" value="" step="0.1" min="0" placeholder="例：0.5" oninput="calcDesign()"></div>
+      <div class="ctl"><label>残留塩素（mg/L・わかる場合のみ）</label><input type="number" id="dCl2" value="" step="0.01" min="0" placeholder="例：0.4" oninput="calcDesign()"></div>
+      <div class="ctl"><label>設計回収率 <span class="val" id="dRecV"></span></label>
+        <input type="range" id="dRec" min="50" max="85" step="1" value="75" oninput="calcDesign()">
+        <div class="hint">濃縮側の垢リスクと一緒に見る。上限まで上げなくても良い</div></div>
+      <div class="ctl"><label>薬注（スケールインヒビター）</label>
+        <select id="dAnti" onchange="calcDesign()">
+          <option value="none" selected>なし（LSI≤0・CaSO₄≤1.0・シリカ100）</option>
+          <option value="weak">弱め（LSI +0.5・CaSO₄ 1.5・シリカ120）</option>
+          <option value="std">標準（LSI +1.8・CaSO₄ 2.5・シリカ150）</option>
+          <option value="strong">強め（LSI +2.5・CaSO₄ 4.0・シリカ180）</option>
+        </select>
+        <div class="hint">許容上限は一般的な目安。最終確認は使用薬注のメーカー資料で</div></div>
+      <div class="ctl"><label>構成</label>
+        <div class="seg" id="segStage">
+          <button class="active" data-v="1" onclick="setStage('1')">単段</button>
+          <button data-v="2" onclick="setStage('2')">2段</button>
+          <button data-v="3" onclick="setStage('3')">3段</button>
+          <button data-v="2pass" onclick="setStage('2pass')">2パス</button>
+        </div>
+        <div class="hint">段＝濃縮水を次段の膜へ（直列）。本数＝段内の並列列数。2パス＝透過水をもう一度 RO</div></div>
+      <div id="stage2Inputs" style="display:none">
+        <div class="ctl"><label id="dN1L">1段目 本数（列数）</label><input type="number" id="dN1" value="4" step="1" min="1" max="8" oninput="calcDesign()"></div>
+        <div class="ctl"><label id="dRec1L">1段目回収率（%）</label><input type="number" id="dRec1" value="50" step="1" min="30" max="75" oninput="calcDesign()"></div>
+        <div class="ctl" id="rowN2"><label id="dN2L">2段目 本数（列数）</label><input type="number" id="dN2" value="2" step="1" min="1" max="8" oninput="calcDesign()"></div>
+        <div class="ctl" id="rowRec2"><label id="dRec2L">2段目回収率（%）</label><input type="number" id="dRec2" value="70" step="1" min="40" max="85" oninput="calcDesign()"></div>
+        <div class="ctl" id="rowN3" style="display:none"><label>3段目 本数（列数）</label><input type="number" id="dN3" value="1" step="1" min="1" max="4" oninput="calcDesign()"></div>
+        <div class="ctl" id="rowRec3" style="display:none"><label>3段目回収率（%）</label><input type="number" id="dRec3" value="60" step="1" min="40" max="85" oninput="calcDesign()"></div>
+      </div>
+      <div class="ctl" style="border-bottom:none">
+        <button onclick="applyToRO()" style="width:100%;border:var(--line);background:var(--paper);font-family:var(--sans);font-weight:600;font-size:12px;padding:8px;cursor:pointer">→ この水質を RO 4040 タブに反映</button>
+        <div class="hint">計算TDSと水温をRO計算の入力にコピーする</div></div>
+      <details class="srcnote">
+        <summary>この水質データ、どうやって集めるの？</summary>
+        <div>
+          <p><b>まず知っておくこと：</b>水道の定期検査や業者の無料11項目検査は、Ca・Mgの個別値・カリウム・硫酸イオン・アルカリ度・シリカが抜けていることが多く、そのままでは全分析モードに入りません。</p>
+          <ol>
+            <li><b>自治体の検査結果（無料）</b>：水道水なら年度結果がネット公開。硬度（合計）・Na・Cl⁻・NO₃⁻・pHは骨組みとして使えます。</li>
+            <li><b>簡易キットで自分で測る（1箱数千円）</b>：パックテスト等でアルカリ度・硬度・硫酸イオン・硝酸・シリカ・pHは揃います。半定量ですが、設計の推算精度（±10〜20%）には十分。CaとMgの個別は測りにくいので、硬度合計から按分（日本の地下水はおおよそ Ca:Mg ≈ 3:1）か、次の委託へ。</li>
+            <li><b>検査機関へ委託（2〜4万円・本命）</b>：イオン一括分析（ICP＋イオンクロマトグラフ）＋アルカリ度滴定＋シリカ。市の衛生研究所・県の食品衛生検査センター・民間の環境検査会社が対応。全分析モードにそのまま入るデータが手に入り、イオン収支チェックで品質も確認できます。</li>
+          </ol>
+          <p><b>表記の注意：</b>アルカリ度が「CaCO₃換算」なら ×61÷50 で HCO₃⁻（mg/L）に換算。シリカはROの垢対策で効く「単体シリカ」が目安です。</p>
+        </div>
+      </details>
+    </aside>
+    <section class="results">
+      <div class="ptitle dark">結果 — 水質評価とスケーリング予測</div>
+      <div class="judge" id="dJudge"></div>
+      <div class="outgrid" id="dSummary"></div>
+      <div class="ptitle" style="margin-top:16px">浸透水圧 — 近似式と厳密値の比較</div>
+      <div class="specstrip" style="border-bottom:var(--line)">
+        <div class="cell"><div class="k">厳密値（イオン組成から van 't Hoff）</div><div class="v" id="dPiStrict">—</div></div>
+        <div class="cell"><div class="k">ROタブの近似式（TDS÷1000×0.08）</div><div class="v" id="dPiSimple">—</div></div>
+      </div>
+      <div class="ptitle" style="margin-top:16px">濃縮側シミュレーション（設計回収率で）</div>
+      <div class="judge" id="dConcJudge"></div>
+      <div class="outgrid" id="dConc"></div>
+      <div class="outgrid" id="dMulti" style="display:none"></div>
+      <div class="ptitle" style="margin-top:16px">最大許容回収率（垢リスクで逆算）</div>
+      <div class="outgrid" id="dMaxR"></div>
+      <div class="ptitle" style="margin-top:16px">CO₂ と EDIへの影響</div>
+      <div class="judge" id="dCo2Judge"></div>
+      <div class="outgrid" id="dCo2"></div>
+      <div class="ptitle" style="margin-top:16px">前処理の提案</div>
+      <div id="dPretreat" style="padding:12px 14px;font-size:12px;line-height:1.9;border-bottom:var(--line)"></div>
+      <div style="font-size:10.5px;color:var(--faint);padding:8px 14px">
+        LSI＝Langelier飽和指数（炭酸カルシウム垢の指標。薬注基準まで許容）。CaSO₄飽和度＝活量積÷溶解度積（1超で析出傾向。25℃基準）。LSI・CaSO₄は Davies 式の活量係数で補正（濃縮してイオン強度が上がるほど実際は析出しにくい方向）。シリカ許容濃度は薬注強度による目安（pH・温度で変わる）。CO₂はROを透過するガスのため脱気・pH調整で除去対象。いずれも水処理学会・膜メーカー設計ガイドに基づく推算
+      </div>
+    </section>
+  </div>
+
+<!-- ================= HW (メーカー公式マトリクス) ================= -->
+<div id="panelHW" class="hidden" style="display:contents">
+<aside>
+  <div class="ptitle dark">入力 — RO 運転条件（循環水量）</div>
+
+  <div class="ctl">
+    <label>機種（R.O.メンブレン本数）</label>
+    <select id="hwModel" onchange="syncHwN();calcHW()">
+      <option value="1">K-Water 1本仕様（精製5–10 L/min）</option>
+      <option value="2">K-Water 2本仕様（精製10–19.5）</option>
+      <option value="3">K-Water 3本仕様（精製14–28）</option>
+      <option value="4" selected>K-Water 4本仕様（精製18–36）</option>
+    </select>
+  </div>
+
+  <div class="ctl">
+    <label>回収率 <span class="val" id="hwRecV"></span></label>
+    <input type="range" id="hwRec" min="50" max="80" step="1" value="52" oninput="calcHW()">
+    <div class="hint">50–80%（原水TDS・膜本数による）。高いほど排水が減る</div>
+  </div>
+
+  <div class="ctl">
+    <label>ポンプ運転圧（R.O.流入圧） <span class="val" id="hwPV"></span></label>
+    <input type="range" id="hwP" min="0.75" max="1.50" step="0.05" value="1.20" oninput="calcHW()">
+    <div class="hint">設定は0.05MPa刻みが基本</div>
+  </div>
+
+  <div class="ctl">
+    <label>水温（夏季最高） <span class="val" id="hwTV"></span></label>
+    <input type="range" id="hwT" min="5" max="35" step="1" value="25" oninput="calcHW()">
+    <div class="hint">取水温度が高い地域ほど循環水は増える</div>
+  </div>
+
+  <div class="ctl" style="border-bottom:none">
+    <label>実測の循環水量（L/min・任意）</label>
+    <input type="number" id="hwMeas" value="9.69" step="0.1" min="0" max="60" oninput="calcHW()">
+    <div class="hint">流量モニタ2画面の値を入れると照合できる</div>
+  </div>
+
+  <div class="ptitle">機種仕様（公式仕様書より）</div>
+  <div class="specstrip" style="border-bottom:none" id="hwSpec"></div>
+</aside>
+
+<section class="results">
+  <div class="ptitle dark">結果 — 循環水量の設定基準</div>
+
+  <div class="judge" id="judgeHW"></div>
+  <div class="outgrid" id="outHW"></div>
+
+  <div class="ptitle">升目表 — 循環水量（ℓ/分）公式マトリクス</div>
+  <div class="mwrap">
+    <table class="mx">
+      <thead>
+        <tr><th>水温＼圧力</th></tr>
+      </thead>
+      <tbody id="mxHW"></tbody>
+    </table>
+  </div>
+  <div style="font-size:10.5px;color:var(--faint);padding:8px 14px;border-bottom:var(--line)">
+    グレー＝40L/min以上（流量計レンジ上限。「この圧力は極力設定しないこと」公式注記）／青枠＝現在の条件に最も近いセル
+    ／セル間の値は線形補間。転記元の誤植と判断した2箇所（4本・65%・5℃の1.35/1.40MPa、4本・60%・25℃の1.30MPa）は前後値から補完済み
+  </div>
+</section>
+</div>
+
+<!-- ================= RO (汎用計算) ================= -->
+<div id="panelRO" class="hidden" style="display:contents">
+<aside>
+  <div class="ptitle dark">入力 — 汎用RO条件</div>
+
+  <div class="ctl">
+    <label>膜のタイプ（4040）</label>
+    <div class="seg" id="segMemb">
+      <button class="active" data-v="std" onclick="setMemb('std')">標準型<span style="display:block;font-weight:400;font-size:9.5px">BW30系 2,400GPD</span></button>
+      <button data-v="lp" onclick="setMemb('lp')">低圧型<span style="display:block;font-weight:400;font-size:9.5px">LE・ULP系 2,500GPD</span></button>
+    </div>
+    <div class="hint">メーカー間の差は小さい。型式不明なら標準型でOK</div>
+  </div>
+
+  <div class="ctl">
+    <label>膜の本数</label>
+    <div class="stepper">
+      <button onclick="bump('n',-1)">−</button>
+      <input type="number" id="n" value="4" min="1" max="12" oninput="setManualN()">
+      <button onclick="bump('n',1)">＋</button>
+    </div>
+    <div class="seg" id="segAuto" style="margin-top:8px">
+      <button data-v="auto" class="active" onclick="setAuto(true)">自動で決定</button>
+      <button data-v="manual" onclick="setAuto(false)">手動</button>
+    </div>
+    <div class="hint">自動＝目標水量・圧力・水温から最短本数を毎回再計算。本数を直接触ると手動に切り替わる</div>
+  </div>
+
+  <div class="ctl"><label>使用圧力（RO流入圧 MPa）</label>
+    <input type="number" id="p" value="1.20" step="0.05" min="0.3" max="4.1" oninput="calcRO()">
+    <div class="hint">4040の上限 4.1 MPa（600psi）</div></div>
+
+  <div class="ctl"><label>水温（℃）</label>
+    <input type="number" id="t" value="22.5" step="0.5" min="5" max="40" oninput="calcRO()">
+    <div class="hint">25℃基準で1℃≒3%変動。冬は減る</div></div>
+
+  <div class="ctl"><label>給水 TDS（ppm）</label>
+    <input type="number" id="tds" value="210" step="10" min="10" max="5000" oninput="calcRO()">
+    <div class="hint">比抵抗÷2 が目安。425μS/cm ≒ 210ppm</div></div>
+
+  <div class="ctl"><label>回収率（%）</label>
+    <input type="number" id="rec" value="52" step="1" min="10" max="85" oninput="calcRO()">
+    <div class="hint">透過水÷給水。循環式は50〜80%級</div></div>
+
+  <div class="ptitle">目標・実測</div>
+  <div class="ctl"><label>作りたい透過水量</label>
+    <input type="number" id="goal" value="1400" step="50" min="50" oninput="syncGoal('h')">
+    <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+      <span style="font-size:11px;color:var(--faint)">＝</span>
+      <input type="number" id="goalMin" value="23.3" step="0.5" min="0.5" oninput="syncGoal('m')" style="flex:1;min-width:0">
+      <span style="font-size:11px;white-space:nowrap">L/min（流量計の目盛）</span>
+    </div>
+    <div class="hint">どっちかに入ればもう片方は自動連動。L/min は現場の流量計と同じ単位</div></div>
+  <div class="ctl" style="border-bottom:none"><label>実測透過水量（L/min・任意）</label>
+    <input type="number" id="meas" value="19.15" step="0.05" min="0" oninput="calcRO()">
+    <div class="hint">入れると「膜の状態」が判定できる</div></div>
+</aside>
+
+<section class="results">
+  <div class="ptitle dark">結果 — この条件で作れる水</div>
+  <div class="judge" id="judgeRO"></div>
+  <div class="specstrip" style="border-bottom:var(--line)">
+    <div class="cell"><div class="k">目標達成の最短本数（今の圧力・水温・TDSで）</div><div class="v" id="roBestN">—</div></div>
+    <div class="cell"><div class="k">K-Water対応構成（仕様上の目安）</div><div class="v" id="hwRecRO">—</div></div>
+  </div>
+  <div class="outgrid" id="outRO"></div>
+  <div class="ptitle">升目表 — 本数ごとの能力（同じ圧力・水温・TDS）</div>
+  <div class="mwrap">
+    <table class="mx">
+      <thead><tr>
+        <th>本数</th><th>透過水 L/h</th><th>透過水 L/min</th><th>給水 m³/h</th>
+        <th>濃水 m³/h</th><th>目標に要する圧力</th><th>判定</th>
+      </tr></thead>
+      <tbody id="mxRO"></tbody>
+    </table>
+  </div>
+  <div style="font-size:10.5px;color:var(--faint);padding:8px 14px;border-bottom:var(--line)">
+    青線＝選んでいる本数　／　「最短」＝目標を今の圧力で作れる最小本数　／　圧力は推定値。実際は0.05MPa刻みで上げて実測確認　／　本数が「自動で決定」の間は、目標・圧力・水温・TDSを変えるたびに最短本数が自動で上書きされる
+  </div>
+</section>
+</div>
+
+<!-- ================= EDI ================= -->
+<div id="panelEDI" class="hidden" style="display:contents">
+<aside>
+  <div class="ptitle dark">入力 — EDI XL</div>
+  <div class="ctl"><label>モジュール</label>
+    <select id="ediModel" onchange="calcEDI();calcTune()"></select></div>
+  <div class="ctl"><label>作りたい製品水量（L/h）</label>
+    <input type="number" id="ediGoal" value="1400" step="50" min="20" oninput="calcEDI()"></div>
+  <div class="ctl" style="border-bottom:none"><label>給水 比抵抗 FCE（μS/cm）</label>
+    <input type="number" id="ediFce" value="14.78" step="0.5" min="0.05" max="50" oninput="calcEDI()">
+    <div class="hint">RO透過水の値。推奨 9 以下／上限 33</div></div>
+
+  <div class="ptitle">仕様の前提（全機種共通）</div>
+  <div class="specstrip" style="border-bottom:none">
+    <div class="cell"><div class="k">濃縮水量</div><div class="v">製品の10%</div></div>
+    <div class="cell"><div class="k">電極水量</div><div class="v">10 L/h</div></div>
+    <div class="cell"><div class="k">通常圧力</div><div class="v">2–3 bar</div></div>
+    <div class="cell"><div class="k">最大圧力</div><div class="v">5 bar</div></div>
+    <div class="cell"><div class="k">製品−濃縮 圧差</div><div class="v">+0.3–0.7</div></div>
+    <div class="cell"><div class="k">電極差圧</div><div class="v">0.9–1.1 bar</div></div>
+  </div>
+</aside>
+
+<section class="results">
+  <div class="ptitle dark">結果 — 水量バランス</div>
+  <div class="judge" id="judgeEDI"></div>
+  <div class="outgrid" id="outEDI"></div>
+  <div class="ptitle">全機種カタログ — XLシリーズ仕様表</div>
+  <div class="mwrap">
+    <table class="mx">
+      <thead><tr>
+        <th>機種</th><th>流量範囲 L/h</th><th>推奨電圧</th><th>CIP電圧</th>
+        <th>CIP製品 L/h</th><th>CIP濃縮 L/h</th><th>寸法 cm</th><th>重量</th>
+      </tr></thead>
+      <tbody id="mxEDI"></tbody>
+    </table>
+  </div>
+  <div style="font-size:10.5px;color:var(--faint);padding:8px 14px">
+    CIP＝酸洗浄（再生）時の条件。目安：製品側を下限流量、濃縮を給水の15–20%、電圧を上表の値にして約1時間、必要に応じて2〜3回繰り返し
+  </div>
+</section>
+</div>
+
+<!-- ================= 受水槽 ================= -->
+<div id="panelTANK" class="hidden" style="display:contents">
+<aside>
+  <div class="ptitle dark">入力 — RO前の受水槽検討</div>
+
+  <div class="ctl"><label>ROに必要な給水量（L/min）</label>
+    <input type="number" id="tFeed" value="46.4" step="0.5" min="1" oninput="calcTank()">
+    <div class="seg" style="margin-top:8px" id="segFeed">
+      <button onclick="setFeed(25)">1本目安<br>25</button>
+      <button onclick="setFeed(40)">2本目安<br>40</button>
+      <button onclick="setFeed(50)">3本目安<br>50</button>
+      <button onclick="setFeed(60)">4本目安<br>60</button>
+      <button class="active" onclick="setFeed(46.4)">実測<br>46.4（52%時）</button>
+    </div>
+    <div class="hint">目安＝K-Water仕様の「必要給水量」。実測は透過＋排水＋循環（52%運転時）</div>
+  </div>
+
+  <div class="ctl"><label>1日の運転時間（h）</label>
+    <input type="number" id="tOp" value="10" step="0.5" min="0.5" oninput="calcTank()">
+    <div class="hint">洗車場の営業時間に連動。製造していない時間帯は入れない</div></div>
+
+  <div class="ctl"><label>敷地の給水能力（L/min）</label>
+    <input type="number" id="tSupply" value="15" step="1" min="0" oninput="calcTank()">
+    <table class="mx" style="margin-top:8px;font-size:11px">
+      <thead><tr><th style="text-align:left">給水管の口径</th><th>目安流量</th><th></th></tr></thead>
+      <tbody>
+        <tr style="cursor:pointer" onclick="setSupply(15)"><td>13mm 立上げ（1/2B）</td><td class="num">〜15 L/min</td><td class="num" style="color:var(--accent)">入力→</td></tr>
+        <tr style="cursor:pointer" onclick="setSupply(30)"><td>20mm（3/4B）</td><td class="num">〜30 L/min</td><td class="num" style="color:var(--accent)">入力→</td></tr>
+        <tr style="cursor:pointer" onclick="setSupply(50)"><td>25mm（1B）</td><td class="num">〜50 L/min</td><td class="num" style="color:var(--accent)">入力→</td></tr>
+        <tr style="cursor:pointer" onclick="setSupply(70)"><td>30mm（1-1/4B）</td><td class="num">〜70 L/min</td><td class="num" style="color:var(--accent)">入力→</td></tr>
+      </tbody>
+    </table>
+    <div class="hint">圧力・管の長さ・同時使用で大きく変わる目安。表の行をクリックすると入力欄に入る</div>
+    <div class="ptitle" style="border-top:var(--line);margin-top:4px">バケツ計測で実流量を出す</div>
+    <div style="display:flex;align-items:center;gap:6px;padding:10px 0 2px">
+      <input type="number" id="tBucketL" value="10" step="1" min="1" style="width:64px">
+      <span style="font-size:11px;white-space:nowrap">Lのバケツが</span>
+      <input type="number" id="tBucketS" value="" step="1" min="1" placeholder="秒数" style="width:64px">
+      <span style="font-size:11px;white-space:nowrap">秒で満タン</span>
+    </div>
+    <button onclick="applyBucket()" style="width:100%;border:var(--line);background:var(--paper);font-family:var(--sans);font-weight:600;font-size:12px;padding:8px;cursor:pointer;margin-top:6px">→ 流量を計算して入力欄に反映</button>
+    <div class="hint" id="tBucketOut">蛇口全開で計測。圧力の影響がそのまま実値に入る</div>
+    <div class="hint">同じ蛇口なら「流量 ∝ √圧力」で推せる：圧力が半分→流量は約0.7倍。動水圧（流しながらの圧力）もメモしておくと後で使える</div></div>
+
+  <div class="ctl"><label>朝夕の使用ピークで給水が落ちる見込み</label>
+    <div class="seg" id="segMarg">
+      <button data-v="1" onclick="setMarg(1)">ほぼ落ちない<br><span style="font-weight:400;font-size:9.5px">×1.0</span></button>
+      <button data-v="0.9" onclick="setMarg(0.9)">やや渋くなる<br><span style="font-weight:400;font-size:9.5px">×0.9</span></button>
+      <button data-v="0.8" class="active" onclick="setMarg(0.8)">かなり渋くなる<br><span style="font-weight:400;font-size:9.5px">×0.8</span></button>
+      <button data-v="0.6" onclick="setMarg(0.6)">ピーク時はほぼ出ない<br><span style="font-weight:400;font-size:9.5px">×0.6</span></button>
+    </div>
+    <div class="hint">計測時間帯の値にこの係数を掛けて判定する。圧力が0.3→0.2MPaなら流量は約×0.8（√則）。確実なのは<b>ピーク時にバケツ計測</b>して「×1.0」にすること</div></div>
+
+  <div class="ctl"><label>給水パターン</label>
+    <div class="seg" id="segTmode">
+      <button data-v="always" class="active" onclick="setTmode('always')">常時給水<br><span style="font-weight:400;font-size:9.5px">水量・圧力が弱い</span></button>
+      <button data-v="limited" onclick="setTmode('limited')">時間限定<br><span style="font-weight:400;font-size:9.5px">夜間・タイマー・井戸</span></button>
+    </div>
+    <div class="hint">時間限定＝運転時間帯に給水が来ない想定（タンクに1回分ためる運用）</div></div>
+
+  <div class="ctl" id="tSupHW"><label>1日に給水できる時間（h）</label>
+    <input type="number" id="tSupH" value="8" step="0.5" min="0.5" oninput="calcTank()">
+    <div class="hint">例：夜間の8時間だけタイマー給水・井戸が回る時間など</div></div>
+
+  <div class="ctl"><label>バッファ目標時間（分）<span style="font-weight:400">— 常時給水モード</span></label>
+    <input type="number" id="tBuf" value="60" step="10" min="10" oninput="calcTank()">
+    <div class="hint">給水が途切れてもこの時間は運転を続けたい、という目安。大きいほど安全だがタンクも大きくなる</div></div>
+
+  <div class="ctl" style="border-bottom:none"><label>タンク有効率（%）</label>
+    <input type="number" id="tEff" value="85" step="1" min="30" max="100" oninput="calcTank()">
+    <div class="hint">死水量・最低水位・あおり分を除く使える割合。85%程度が一般的</div></div>
+</aside>
+
+<section class="results">
+  <div class="ptitle dark">結果 — 水量収支とタンク容量</div>
+  <div class="judge" id="judgeTANK"></div>
+  <div class="specstrip" style="border-bottom:var(--line)">
+    <div class="cell"><div class="k">1日の必要水量</div><div class="v" id="tDailyN">—</div></div>
+    <div class="cell"><div class="k">1日の供給可能量</div><div class="v" id="tDailyS">—</div></div>
+    <div class="cell"><div class="k">必要有効容量</div><div class="v" id="tVeff">—</div></div>
+    <div class="cell"><div class="k">推奨タンク容量（規格丸上げ）</div><div class="v" id="tNominal" style="color:var(--accent)">—</div></div>
+  </div>
+  <div class="outgrid" id="outTANK"></div>
+  <div class="ptitle">1時間あたりの水量バランス（L/h）</div>
+  <div style="padding:12px 14px;border-bottom:var(--line)" id="barsTANK"></div>
+  <div style="font-size:10.5px;color:var(--faint);padding:8px 14px">
+    設置のコツ：タンク→RO給水ポンプは「短く・太く」吸込み負圧を避ける／タンクは清掃口・溢流・排水のある構造／水の滞留は1〜2日以内に循環させる（臭い・細菌対策）／満水は1L＝1kg。置き場の耐荷重を確認／寒地は凍結対策
+  </div>
+</section>
+</div>
+
+  <div id="panelTUNE" class="hidden" style="display:contents">
+    <aside>
+      <div class="ptitle dark">入力 — RO の状態</div>
+
+      <div class="ctl"><label>給水 TDS（ppm）</label>
+        <input type="number" id="tFeedTds" value="210" step="1" min="10" oninput="calcTune()">
+        <div class="hint">比抵抗÷2 が目安。425μS/cm ≒ 210ppm</div></div>
+
+      <div class="ctl"><label>透過水 TDS（ppm）</label>
+        <input type="number" id="tPermTds" value="15" step="0.1" min="0" oninput="calcTune()">
+        <div class="hint">除去率＝(1−透過TDS÷給水TDS)×100。90%以上が目安</div></div>
+
+      <div class="ctl"><label>水温（℃）</label>
+        <input type="number" id="tTempT" value="22.5" step="0.5" min="5" max="40" oninput="calcTune()"></div>
+
+      <div class="ctl"><label>膜の本数（本）</label>
+        <input type="number" id="tN" value="4" step="1" min="1" max="12" oninput="calcTune()"></div>
+
+      <div class="ctl"><label>現在の運転圧力（MPa）</label>
+        <input type="number" id="tPress" value="1.20" step="0.01" min="0.3" max="4.1" oninput="calcTune()"></div>
+
+      <div class="ctl"><label>目標透過水量（L/min）</label>
+        <input type="number" id="tGoal" value="23.3" step="0.1" min="0.1" oninput="calcTune()"></div>
+
+      <div class="ctl" style="border-bottom:none"><label>実測透過水量（L/min）</label>
+        <input type="number" id="tMeas" value="19.15" step="0.01" min="0" oninput="calcTune()">
+        <div class="hint">0を入れると水量診断は行わず、除去率と必要圧力だけ出る</div></div>
+
+      <div class="ptitle dark" style="margin-top:18px">入力 — EDI の状態</div>
+
+      <div class="ctl"><label>製品水 導電率（μS/cm）</label>
+        <input type="number" id="tECond" value="0.17" step="0.01" min="0" oninput="calcTune()">
+        <div class="hint">10μS/cm は現場の管理ライン（旧イオン樹脂方式の交換基準からの流用）。メーカー保証の上限ではない。XLシリーズは0.1μS級まで出るので、上がってきたら悪化のサインとして扱う</div></div>
+
+      <div class="ctl"><label>FCE（μS/cm）</label>
+        <input type="number" id="tFce" value="14.78" step="0.01" min="0.1" oninput="calcTune()">
+        <div class="hint">RO透過水の導電率。9以下推奨・33まで許容</div></div>
+
+      <div class="ctl"><label>製品水量（L/h）</label>
+        <input type="number" id="tEFlow" value="1400" step="10" min="0" oninput="calcTune()"></div>
+
+      <div class="ctl"><label>直流電圧（V）</label>
+        <input type="number" id="tVol" value="440" step="0.1" min="0" oninput="calcTune()"></div>
+
+      <div class="ctl" style="border-bottom:none"><label>直流電流（A）</label>
+        <input type="number" id="tCur" value="1.19" step="0.01" min="0" oninput="calcTune()">
+        <div class="hint">抵抗＝電圧÷電流。メーカー典型は定格電圧で1–4A（給水FCE 2–10μS/cm時）→75–300Ω。高すぎ＝スケール・汚れのサイン。気温で約2%/℃変わるので同条件比較</div></div>
+    </aside>
+    <section class="results">
+      <div class="ptitle dark">RO の状態と調整方向</div>
+      <div class="judge" id="roJudge"></div>
+      <div class="specstrip" style="border-bottom:var(--line)">
+        <div class="cell"><div class="k">現在の除去率</div><div class="v" id="tRej">—</div></div>
+        <div class="cell"><div class="k">目標に必要な圧力</div><div class="v" id="tNeedP" style="color:var(--accent)">—</div></div>
+        <div class="cell"><div class="k">圧力の余裕</div><div class="v" id="tPressGap">—</div></div>
+        <div class="cell"><div class="k">膜の健康度</div><div class="v" id="tHealth">—</div></div>
+      </div>
+      <div class="ptitle dark" style="margin-top:18px">EDI の状態と調整方向</div>
+      <div class="judge" id="ediJudge"></div>
+      <div class="specstrip" style="border-bottom:var(--line)">
+        <div class="cell"><div class="k">対象モデル</div><div class="v" id="tEdiModel" style="font-size:13px">—</div></div>
+        <div class="cell"><div class="k">電気抵抗（V÷I）</div><div class="v" id="tRes">—</div></div>
+        <div class="cell"><div class="k">判定基準（メーカー典型）</div><div class="v" style="font-size:10.5px">定格電圧÷1–4A → 75–300Ω</div></div>
+      </div>
+      <div class="ptitle" style="margin-top:18px">電源（V/A）の設定目安</div>
+      <div id="powerGuide" style="padding:12px 14px;font-size:12px;line-height:1.9;border-bottom:var(--line)"></div>
+      <div class="ptitle" style="margin-top:18px">調整手順（この順番でやる）</div>
+      <div id="guide"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <b>注意：</b>この計算機はメーカー公称値・公式マトリクスからの<b>推算・転記</b>です（個体差・膜の経年で±10〜20%ずれます）。
+  調整は圧力0.05MPa刻みなど少しずつ行い、各計器の実測値で確認してください。薬品洗浄や改造はメーカー・導入業者の手順・立ち会いのもとで。<br>
+  参照：DuPont FilmTec 4040 データシート（2,400–2,500GPD公称）／SnowPure Electropure XL OEMマニュアル v3.5.0／実測データ（2026-10-20）
+</footer>
+
+<script>
+/* ================= HW循環水量 公式マトリクス転記 ================= */
+const HW_PRESS=[0.75,0.8,0.85,0.9,0.95,1.0,1.05,1.1,1.15,1.2,1.25,1.3,1.35,1.4,1.45,1.5];
+const HW_TEMPS=[5,10,15,20,25,30,35];
+const HW_CIRC={"1":{"50":[[11,11,12,12,12,13,14,14,15,15,16,17,17,17,18,18],[13,14,14,15,15,16,17,17,18,18,19,20,21,21,22,22],[15,16,17,18,18,19,20,20,21,22,23,24,25,25,26,26],[18,19,20,21,21,22,24,24,25,26,27,28,29,29,31,31],[21,23,24,25,25,26,28,28,30,31,32,33,34,34,37,37],[24,26,27,29,29,30,33,33,34,35,37,38,39,39,42,42],[28,30,31,33,33,34,37,37,39,40,42,43,45,45,48,48]],"55":[[11,12,13,13,13,14,15,15,16,16,17,18,18,18,19,19],[14,14,15,16,16,17,18,18,19,20,20,21,22,22,23,23],[16,17,18,19,19,20,22,22,22,23,24,25,26,26,28,28],[19,20,21,22,22,23,26,26,27,28,29,30,31,31,33,33],[23,24,25,26,26,28,30,30,31,33,34,35,36,36,39,39],[26,27,29,30,30,32,34,34,36,37,39,40,42,42,44,44],[30,31,33,35,35,36,39,39,41,43,44,46,47,47,51,51]],"60":[[12,12,13,14,14,14,16,16,16,17,18,18,19,19,20,20],[14,15,16,17,17,17,19,19,20,20,21,22,23,23,24,24],[17,18,19,20,20,21,23,23,23,24,25,26,27,27,29,29],[20,21,22,23,23,25,27,27,28,29,30,31,32,32,34,34],[24,25,26,28,28,29,31,31,33,34,35,37,38,38,41,41],[27,29,30,32,32,33,36,36,38,39,41,42,43,43,46,46],[31,33,34,36,36,38,41,41,43,45,46,48,50,50,53,53]],"65":[[12,13,14,14,14,15,16,16,17,18,18,19,20,20,21,21],[15,16,16,17,17,18,20,20,20,21,22,23,24,24,25,25],[18,19,20,20,20,21,23,23,24,25,26,27,28,28,30,30],[21,22,23,24,24,25,28,28,29,30,31,32,33,33,36,36],[24,26,27,29,29,30,33,33,34,35,37,38,39,39,42,42],[28,30,31,33,33,34,37,37,39,41,42,44,45,45,48,48],[32,34,36,38,38,39,43,43,45,46,48,50,52,52,55,55]],"70":[[13,13,14,15,15,15,17,17,18,18,19,20,20,20,22,22],[15,16,17,18,18,19,20,20,21,22,23,24,24,24,26,26],[18,19,20,21,21,22,24,24,25,26,27,28,29,29,31,31],[21,23,24,25,25,26,29,29,30,31,32,33,34,34,37,37],[25,27,28,29,29,31,34,34,35,36,38,39,41,41,43,43],[29,31,32,34,34,35,39,39,40,42,43,45,47,47,50,50],[33,35,37,39,39,41,44,44,46,48,50,51,53,53,57,57]],"75":[[13,14,14,15,15,16,17,17,18,19,19,20,21,21,22,22],[16,16,17,18,18,19,21,21,22,22,23,24,25,25,27,27],[19,20,21,22,22,23,25,25,26,27,28,29,30,30,32,32],[22,23,24,26,26,27,29,29,31,32,33,34,35,35,38,38],[26,27,29,30,30,32,35,35,36,37,39,40,42,42,45,45],[30,31,33,35,35,36,40,40,41,43,45,46,48,48,51,51],[34,36,38,40,40,42,45,45,47,49,51,53,55,55,58,58]],"80":[[13,14,15,15,15,16,18,18,18,19,20,21,21,21,23,23],[16,17,18,19,19,19,21,21,22,23,24,25,26,26,27,27],[19,20,21,22,22,23,25,25,26,27,28,29,31,31,33,33],[22,24,25,26,26,27,30,30,31,32,34,35,36,36,39,39],[26,28,29,31,31,32,35,35,37,38,40,41,43,43,46,46],[30,32,34,36,36,37,41,41,42,44,46,47,49,49,52,52],[35,37,39,41,41,43,46,46,48,50,52,54,56,56,60,60]]},"2":{"50":[[7,7,7,8,8,8,8,9,9,10,10,10,11,11,11,11],[8,8,9,9,9,10,10,11,11,11,12,12,13,13,13,13],[9,10,10,11,11,11,12,12,13,13,14,14,15,15,16,16],[11,12,12,13,13,13,14,15,15,16,16,17,18,18,19,19],[13,14,14,15,15,16,16,17,18,19,19,20,21,21,22,22],[15,16,16,17,17,18,19,20,20,21,22,23,23,23,25,25],[17,18,19,20,20,21,21,22,23,24,25,26,27,27,29,29]],"55":[[8,8,9,9,9,10,10,10,11,11,12,12,12,12,13,13],[9,10,10,11,11,11,12,12,13,13,14,14,15,15,16,16],[11,12,12,13,13,14,14,15,15,16,16,17,18,18,19,19],[13,14,15,15,15,16,17,17,18,19,19,20,21,21,22,22],[15,16,17,18,18,19,20,20,21,22,23,24,24,24,26,26],[18,19,20,20,20,21,22,23,24,25,26,27,28,28,30,30],[20,21,22,23,23,24,25,26,27,28,30,31,32,32,34,34]],"60":[[9,9,10,10,10,11,11,12,12,13,13,14,14,14,15,15],[11,11,12,12,12,13,13,14,15,15,16,16,17,17,18,18],[13,13,14,15,15,15,16,17,17,18,19,19,20,20,21,21],[15,16,16,17,17,18,19,20,20,21,22,23,23,23,25,25],[17,18,19,20,20,21,22,23,24,25,26,27,28,28,29,29],[20,21,22,23,23,24,25,26,27,28,29,30,31,31,34,34],[23,24,25,26,26,28,29,30,31,32,33,34,36,36,38,38]],"65":[[10,10,11,11,11,12,12,13,13,14,14,15,15,15,16,16],[12,12,13,13,13,14,15,15,16,17,17,18,18,18,20,20],[14,15,15,16,16,17,17,18,19,20,20,21,22,22,23,23],[16,17,18,19,19,20,21,21,22,23,24,25,26,26,28,28],[19,20,21,22,22,23,24,25,26,27,28,29,30,30,32,32],[22,23,24,25,25,27,28,29,30,31,32,33,35,35,37,37],[25,26,28,29,29,30,32,33,34,35,37,38,39,39,42,42]],"70":[[10,11,12,12,12,13,13,14,14,15,15,16,17,17,18,18],[12,13,14,15,15,15,16,17,17,18,18,19,20,20,21,21],[15,16,16,17,17,18,19,20,20,21,22,23,24,24,25,25],[17,18,19,20,20,21,22,23,24,25,26,27,28,28,30,30],[21,22,23,24,24,25,26,27,28,29,30,31,33,33,35,35],[23,25,26,27,27,29,30,31,32,33,35,36,37,37,40,40],[27,28,30,31,31,33,34,35,37,38,40,41,42,42,45,45]],"75":[[11,12,12,13,13,13,14,15,15,16,16,17,18,18,19,19],[13,14,15,15,15,16,17,17,18,19,20,20,21,21,22,22],[16,17,17,18,18,19,20,21,22,22,23,24,25,25,27,27],[19,20,21,22,22,23,24,25,26,26,27,28,29,29,31,31],[22,23,24,25,25,26,28,29,30,31,32,33,35,35,37,37],[25,26,28,29,29,30,32,33,34,36,37,38,40,40,42,42],[28,30,31,33,33,35,36,38,39,41,42,44,45,45,48,48]],"80":[[12,12,13,13,13,14,15,15,16,17,17,18,18,18,20,20],[14,15,15,16,16,17,18,18,19,20,21,21,22,22,24,24],[16,17,18,19,19,20,21,22,23,24,24,25,26,26,28,28],[19,21,22,23,23,24,25,26,27,28,29,30,31,31,33,33],[23,24,25,27,27,28,29,30,31,33,34,35,36,36,39,39],[26,28,29,30,30,32,33,35,36,37,39,40,42,42,44,44],[30,31,33,35,35,36,38,39,41,43,44,46,47,47,51,51]]},"3":{"50":[[3,3,4,4,4,4,4,4,4,4,5,5,5,5,5,5],[4,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6],[4,5,5,5,5,5,5,6,6,6,6,6,7,7,7,7],[5,5,6,6,6,6,6,7,7,7,7,8,8,8,8,8],[6,6,6,7,7,7,7,8,8,8,9,9,9,9,10,10],[7,7,7,8,8,8,8,9,9,9,10,10,10,10,11,11],[8,8,8,9,9,9,10,10,10,11,11,11,12,12,13,13]],"55":[[5,5,5,6,6,6,6,6,7,7,7,7,8,8,8,8],[6,6,6,7,7,7,7,8,8,8,8,9,9,9,10,10],[7,7,8,8,8,8,9,9,9,10,10,10,11,11,11,11],[8,8,9,9,9,10,10,10,11,11,12,12,12,12,13,13],[9,10,10,11,11,11,12,12,13,13,14,14,15,15,16,16],[11,11,12,12,12,13,13,14,14,15,16,16,17,17,18,18],[12,13,13,14,14,15,15,16,16,17,18,18,19,19,20,20]],"60":[[6,7,7,7,7,8,8,8,9,9,9,10,10,10,11,11],[8,8,8,9,9,9,9,10,10,11,11,11,12,12,13,13],[9,9,10,10,10,11,11,12,12,13,13,13,14,14,15,15],[10,11,12,12,12,13,13,14,14,15,15,16,16,16,17,17],[12,13,13,14,14,15,15,16,17,17,18,19,19,19,20,20],[14,15,15,16,16,17,18,18,19,20,20,21,22,22,23,23],[16,17,17,18,18,19,20,21,22,23,23,24,25,25,27,27]],"65":[[8,8,8,9,9,9,10,10,10,11,11,11,12,12,13,13],[9,9,10,10,10,11,11,12,12,13,13,14,14,14,15,15],[11,11,12,12,12,13,13,14,15,15,16,16,17,17,18,18],[12,13,14,14,14,15,16,16,17,18,18,19,20,20,21,21],[15,15,16,17,17,18,18,19,20,21,22,22,23,23,25,25],[17,18,18,19,19,20,21,22,23,24,25,25,26,26,28,28],[19,20,21,22,22,23,24,25,26,27,28,29,30,30,32,32]],"70":[[9,9,10,10,10,10,11,11,12,12,13,13,14,14,14,14],[10,11,11,12,12,12,13,13,14,15,15,16,16,16,17,17],[12,13,13,14,14,15,15,16,17,17,18,18,19,19,20,20],[14,15,16,17,17,17,18,19,20,20,21,22,22,22,24,24],[17,18,18,19,19,20,21,22,23,24,25,25,26,26,28,28],[19,20,21,22,22,23,24,25,26,27,28,29,30,30,32,32],[22,23,24,25,25,26,27,29,30,31,32,33,35,35,37,37]],"75":[[10,10,11,11,11,12,12,13,13,14,14,15,15,15,16,16],[11,12,13,13,13,14,14,15,16,16,17,17,18,18,19,19],[13,14,15,16,16,16,17,18,18,19,20,20,21,21,23,23],[16,17,17,18,18,19,20,21,22,22,23,24,25,25,27,27],[18,19,20,21,21,22,23,24,25,26,27,28,29,29,31,31],[21,22,23,25,25,26,27,28,29,30,31,32,33,33,36,36],[24,25,27,28,28,29,30,32,33,34,36,37,38,38,41,41]],"80":[[10,11,11,12,12,12,13,14,14,15,15,16,16,16,17,17],[12,13,14,14,14,15,16,16,17,17,18,19,19,19,21,21],[15,15,16,17,17,18,18,19,20,21,21,22,23,23,25,25],[17,18,19,20,20,21,22,23,23,24,25,26,27,27,29,29],[20,21,22,23,23,24,25,26,27,29,30,31,32,32,34,34],[23,24,25,27,27,28,29,30,31,33,34,35,36,36,39,39],[26,28,29,30,30,32,33,35,36,37,39,40,42,42,45,45]]},"4":{"50":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"55":[[2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3],[3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4],[3,3,3,3,3,3,4,4,4,4,4,4,4,4,5,5],[3,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5],[4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6],[4,5,5,5,5,5,5,6,6,6,6,7,7,7,7,7],[5,5,5,6,6,6,6,6,7,7,7,8,8,8,8,8]],"60":[[4,4,4,5,5,5,5,5,5,6,6,6,6,6,7,7],[5,5,5,5,5,6,6,6,6,7,7,7,7,7,8,8],[6,6,6,6,6,7,7,7,8,8,8,8,9,9,9,9],[7,7,7,8,8,8,8,9,9,9,9,10,10,10,11,11],[8,8,8,9,9,9,10,10,10,11,12,12,12,12,13,13],[9,9,10,10,10,10,11,11,12,12,13,13,14,14,15,15],[10,10,11,11,11,12,12,13,13,14,15,15,16,16,17,17]],"65":[[6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9],[7,7,7,8,8,8,8,9,9,9,10,10,10,10,11,11],[8,8,9,9,9,9,10,10,11,11,11,12,12,12,13,13],[9,10,10,11,11,11,12,12,12,13,13,14,14,14,15,15],[11,11,12,12,12,13,14,14,15,15,16,16,17,17,18,18],[12,13,14,14,14,15,15,16,17,17,18,19,19,19,21,21],[14,15,15,16,16,17,18,18,19,20,21,22,22,22,24,24]],"70":[[7,7,8,8,8,8,9,9,9,10,10,11,11,11,12,12],[8,9,9,10,10,10,10,11,11,12,12,13,13,13,14,14],[10,10,11,11,11,12,12,13,13,14,14,15,15,15,16,16],[11,12,13,13,13,14,14,15,16,16,17,17,18,18,19,19],[13,14,15,16,16,16,17,18,18,19,20,20,21,21,23,23],[15,16,17,18,18,19,19,20,21,22,23,24,24,24,26,26],[17,18,19,20,20,21,22,23,24,25,26,27,28,28,30,30]],"75":[[8,9,9,9,9,10,10,11,11,12,12,12,13,13,14,14],[10,10,11,11,11,12,12,13,13,14,14,15,15,15,16,16],[11,12,13,13,13,14,14,15,16,16,17,17,18,18,19,19],[13,14,15,16,16,16,17,18,18,19,20,20,21,21,23,23],[16,17,17,18,18,19,20,21,22,22,23,24,25,25,27,27],[18,19,20,21,21,22,23,24,25,26,27,28,29,29,31,31],[20,22,23,24,24,25,26,27,28,30,31,32,33,33,36,36]],"80":[[9,10,10,11,11,11,12,12,13,13,13,14,14,14,15,15],[11,11,12,13,13,13,14,14,15,15,16,17,17,17,18,18],[13,14,14,15,15,16,16,17,18,18,19,20,20,20,22,22],[15,16,17,18,18,18,19,20,21,22,22,23,24,24,26,26],[18,19,20,21,21,22,22,23,24,25,26,27,28,28,30,30],[20,21,22,24,24,25,26,27,28,29,30,31,34,34,35,35],[23,24,26,27,27,28,29,31,32,33,35,36,38,38,41,41]]}};;
+
+const HW_MODELS={
+  1:{name:'K-Water 1本仕様',perm:'5–10',drain:'3–3.5',feed:'25 L/min以上'},
+  2:{name:'K-Water 2本仕様',perm:'10–19.5',drain:'3–6.5',feed:'40 L/min以上'},
+  3:{name:'K-Water 3本仕様',perm:'14–28',drain:'5–9.5',feed:'50 L/min以上'},
+  4:{name:'K-Water 4本仕様',perm:'18–36',drain:'6–12',feed:'60 L/min以上'},
+};
+
+function switchTab(t){
+  ['DESIGN','HW','RO','EDI','TANK','TUNE'].forEach(x=>{
+    document.getElementById('panel'+x).classList.toggle('hidden', x!==t);
+    document.getElementById('tab'+x).classList.toggle('active', x===t);
+  });
+  if(history.replaceState) history.replaceState(null,'','#'+t);
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  const h=(location.hash||'').replace('#','');
+  if(['DESIGN','HW','RO','EDI','TANK','TUNE'].includes(h)) switchTab(h);
+});
+const g=id=>+document.getElementById(id).value||0;
+const fmt=(x,d=0)=>x.toLocaleString('ja-JP',{maximumFractionDigits:d,minimumFractionDigits:d});
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+
+/* ---- 3次元線形補間（回収率×水温×圧力） ---- */
+function hwCirc(n,rec,p,t){
+  rec=clamp(rec,50,80); p=clamp(p,0.75,1.5); t=clamp(t,5,35);
+  const ri=(rec-50)/5, r0=Math.floor(ri), r1=Math.min(6,r0+1), fr=ri-r0;
+  const pi=(p-0.75)/0.05, p0=Math.floor(pi), p1=Math.min(15,p0+1), fp=pi-p0;
+  const ti=(t-5)/5, t0=Math.floor(ti), t1=Math.min(6,t0+1), ft=ti-t0;
+  const at=(obj)=>obj;
+  const cell=(rr,tt,pp)=>HW_CIRC[n][String(50+rr*5)][tt][pp];
+  const lerp=(a,b,f)=>a+(b-a)*f;
+  const c00=lerp(cell(r0,t0,p0),cell(r1,t0,p0),fr);
+  const c10=lerp(cell(r0,t1,p0),cell(r1,t1,p0),fr);
+  const c01=lerp(cell(r0,t0,p1),cell(r1,t0,p1),fr);
+  const c11=lerp(cell(r0,t1,p1),cell(r1,t1,p1),fr);
+  return lerp(lerp(c00,c10,ft),lerp(c01,c11,ft),fp);
+}
+
+function syncHwN(){ /* 予約：機種変更時の連動（現状は直接参照） */ }
+
+function calcHW(){
+  const n=+document.getElementById('hwModel').value;
+  const rec=g('hwRec'), p=g('hwP'), t=g('hwT'), meas=g('hwMeas');
+  document.getElementById('hwRecV').textContent=rec.toFixed(0)+' %';
+  document.getElementById('hwPV').textContent=p.toFixed(2)+' MPa';
+  document.getElementById('hwTV').textContent=t.toFixed(0)+' ℃';
+
+  const circ=hwCirc(n,rec,p,t);
+  const recGrid=50+Math.round((rec-50)/5)*5;
+
+  /* 判定 */
+  let flags=[];
+  if(circ>=40) flags.push(['danger',`基準 ${circ.toFixed(1)} L/min は流量計レンジ（5–40）上限超過。公式仕様書注記「この圧力は極力設定しないこと」`]);
+  else if(circ>=35) flags.push(['warn',`基準 ${circ.toFixed(1)} L/min はレンジ上限接近。圧力・回収率の見直しを`]);
+  if(meas>0){
+    if(meas<circ*0.95) flags.push(['warn',`実測 ${meas.toFixed(1)} L/min は基準未満。濃縮分極で膜面のスケール・汚れが進みやすい。循環水調整バルブで増加`]);
+    else flags.push(['ok',`実測 ${meas.toFixed(1)} L/min は基準以上。膜には安全側の設定です`]);
+  }
+  if(!flags.length) flags.push(['ok','問題ない設定域です']);
+  document.getElementById('judgeHW').innerHTML=
+    flags.map(f=>`<span class="flag ${f[0]}">${f[0]==='ok'?'設 定 OK':'要 注 意'}</span><span class="msg">${f[1]}</span>`).join('');
+
+  const M=HW_MODELS[n];
+  document.getElementById('outHW').innerHTML=`
+    <div class="o"><div class="k">循環水量の基準</div><div class="v" ${circ>=40?'style="color:var(--danger)"':''}>${circ.toFixed(1)} <small>L/min</small></div></div>
+    <div class="o"><div class="k">参照ブロック（回収率）</div><div class="v">${recGrid} <small>%</small></div></div>
+    <div class="o"><div class="k">${M.name}の精製量目安</div><div class="v" style="font-size:14px">${M.perm} <small>L/min</small></div></div>
+    <div class="o"><div class="k">排水量目安（75%時）</div><div class="v" style="font-size:14px">${M.drain} <small>L/min</small></div></div>`;
+
+  document.getElementById('hwSpec').innerHTML=`
+    <div class="cell"><div class="k">精製量（1.2MPa）</div><div class="v">${M.perm} L/min</div></div>
+    <div class="cell"><div class="k">排水量（75%時）</div><div class="v">${M.drain} L/min</div></div>
+    <div class="cell"><div class="k">必要給水量</div><div class="v">${M.feed}</div></div>
+    <div class="cell"><div class="k">システム回収率</div><div class="v">50–80%</div></div>`;
+
+  /* 升目表：選択本数×最接近回収率ブロック */
+  const pi=(p-0.75)/0.05, pIdx=Math.round(pi);
+  const ti=(t-5)/5, tIdx=Math.round(ti);
+  const block=HW_CIRC[n][String(recGrid)];
+  let head='<tr><th>水温＼圧力</th>'+HW_PRESS.map(x=>`<th>${x.toFixed(2)}</th>`).join('')+'</tr>';
+  document.querySelector('#mxHW').previousElementSibling.innerHTML=head;
+  let html='';
+  HW_TEMPS.forEach((tt,i)=>{
+    html+=`<tr${i===tIdx?' class="sel"':''}><td>${tt} ℃</td>`+
+      block[i].map((v,j)=>{
+        let cls='num';
+        if(v>=40) cls+=' gray';
+        if(i===tIdx && j===pIdx) cls='num hit';
+        return `<td class="${cls}">${v}</td>`;
+      }).join('')+'</tr>';
+  });
+  document.getElementById('mxHW').innerHTML=html;
+}
+
+/* ================= RO ================= */
+const MEMB={
+  std:{name:'標準型（BW30系）',q:379,ptest:1.55},
+  lp:{name:'低圧型（LE・ULP系）',q:395,ptest:1.03},
+};
+const PMAX=4.1, MINC=0.7;
+let membType='std', autoN=true;
+function setMemb(v){membType=v;
+  document.querySelectorAll('#segMemb button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  calcRO();}
+function setAuto(v){autoN=v;
+  document.querySelectorAll('#segAuto button').forEach(b=>b.classList.toggle('active',(b.dataset.v==='auto')===v));
+  calcRO();}
+function setManualN(){autoN=false;
+  document.querySelectorAll('#segAuto button').forEach(b=>b.classList.toggle('active',b.dataset.v==='manual'));
+  calcRO();}
+function bump(id,d){const el=document.getElementById(id);
+  el.value=Math.max(+el.min||1,Math.min(+el.max||12,(+el.value||0)+d));setManualN();}
+function syncGoal(u){
+  if(u==='m'){document.getElementById('goal').value=Math.round(+document.getElementById('goalMin').value*60);}
+  calcRO();
+}
+
+function roCalcCore(n,p,t,tds,rec){
+  const M=MEMB[membType];
+  const tcf=Math.pow(1.03,t-25);
+  const avgF=(1-rec/200)/(1-rec/100);
+  const pi=tds/1000*0.08*avgF;
+  const qElem=M.q*tcf*Math.max(0,(p-pi))/M.ptest;
+  const perm=n*qElem, feed=perm/(rec/100), conc=feed-perm;
+  return {tcf,pi,qElem,perm,feed,conc};
+}
+function pRequired(n,t,tds,rec,goal){
+  const M=MEMB[membType];
+  const tcf=Math.pow(1.03,t-25);
+  const avgF=(1-rec/200)/(1-rec/100);
+  const pi=tds/1000*0.08*avgF;
+  return M.ptest*(goal/(n*M.q*tcf))+pi;
+}
+function hwRecommend(lmin){
+  if(lmin<=10) return 'K-Water 1本仕様';
+  if(lmin<=19.5) return 'K-Water 2本仕様';
+  if(lmin<=28) return 'K-Water 3本仕様';
+  if(lmin<=36) return 'K-Water 4本仕様';
+  return '4本超の別構成';
+}
+function calcRO(){
+  const p=g('p'),t=g('t'),tds=g('tds'),rec=g('rec'),goal=g('goal'),meas=g('meas');
+  document.getElementById('goalMin').value=(goal/60).toFixed(1);
+  let bestN=null;
+  for(let i=1;i<=12;i++){if(roCalcCore(i,p,t,tds,rec).perm>=goal){bestN=i;break;}}
+  if(autoN) document.getElementById('n').value=bestN||12;
+  document.getElementById('roBestN').textContent=(bestN?bestN+' 本':'12 本でも不可')+(autoN?'（自動適用中）':'');
+  document.getElementById('hwRecRO').textContent=hwRecommend(goal/60);
+  const n=Math.round(g('n'));
+  const r=roCalcCore(n,p,t,tds,rec);
+  const vessels=Math.ceil(n/4), minConc=MINC*vessels;
+  const pReq=pRequired(n,t,tds,rec,goal);
+  let flag,cls,msg;
+  if(goal<=r.perm){flag='達 成 可 能';cls='ok';
+  msg=`目標 ${fmt(goal)} L/h は今の設定で作れます（余裕 ${fmt(r.perm-goal)} L/h）。このままか、余裕を活かして圧力を下げられます。`;}
+  else if(pReq<=PMAX){flag='圧 力 不 足';cls='warn';
+    msg=`今の圧力では足りません。流入圧を <b class="mono">${pReq.toFixed(2)} MPa</b> まで上げれば目標達成の見込み。0.05MPa刻みで上げて透過水量を確認。`;}
+  else{const M=MEMB[membType];
+    const nNeed=Math.ceil(goal/(M.q*Math.pow(1.03,t-25)*(PMAX-r.pi)/M.ptest));
+    flag='本 数 不 足';cls='danger';
+    msg=`この本数では上限圧力でも足りません。目標には <b class="mono">${nNeed}本</b> 以上が目安です。`;}
+  document.getElementById('judgeRO').innerHTML=`<span class="flag ${cls}">${flag}</span><span class="msg">${msg}</span>`;
+
+  const concWarn=r.conc<minConc;
+  let html=`
+    <div class="o"><div class="k">透過水（全体）</div><div class="v">${fmt(r.perm)} <small>L/h</small></div></div>
+    <div class="o"><div class="k">透過水</div><div class="v">${fmt(r.perm/60,1)} <small>L/min</small></div></div>
+    <div class="o"><div class="k">1本あたり</div><div class="v">${fmt(r.qElem)} <small>L/h</small></div></div>
+    <div class="o"><div class="k">必要給水</div><div class="v">${fmt(r.feed/1000,2)} <small>m³/h</small></div></div>
+    <div class="o"><div class="k">濃水（排水）</div><div class="v" style="color:${concWarn?'var(--danger)':'inherit'}">${fmt(r.conc/1000,2)} <small>m³/h</small></div></div>
+    <div class="o"><div class="k">最低濃水目安</div><div class="v">${minConc.toFixed(1)} <small>m³/h</small></div></div>
+    <div class="o"><div class="k">温度補正</div><div class="v">×${r.tcf.toFixed(3)}</div></div>
+    <div class="o"><div class="k">浸透水圧差</div><div class="v">${(r.pi*1000).toFixed(0)} <small>kPa差し引き</small></div></div>`;
+  if(meas>0){
+    const implied=Math.max(1,Math.round(meas*60/r.qElem));
+    const pred=implied*r.qElem;
+    const ratio=meas*60/pred*100;
+    const state=ratio>=90?['良好','accent']:ratio>=75?['経年進行','warn']:['交換検討','danger'];
+    html+=`<div class="o" style="border-top:var(--line);grid-column:span 4">
+      <div class="k">膜の状態（実測 ${fmt(meas,2)} L/min ÷ ${implied}本設置として予測 ${fmt(pred/60,2)} L/min）</div>
+      <div class="v" style="color:var(--${state[1]})">${fmt(ratio,0)}% — ${state[0]}</div></div>`;
+  }
+  document.getElementById('outRO').innerHTML=html;
+
+  let mh='';
+  for(let i=1;i<=Math.max(8,n);i++){
+    const rr=roCalcCore(i,p,t,tds,rec), pr=pRequired(i,t,tds,rec,goal);
+    let jd;
+    if(rr.perm>=goal) jd='<span class="ok">◎ 余裕</span>';
+    else if(pr<=PMAX) jd=`<span class="warn">△ ${pr.toFixed(2)}MPa</span>`;
+    else jd='<span class="danger">× 不可</span>';
+    const tags=i===n?'sel':(i===bestN?'best':'');
+    const tag1=i===n?'<span class="tag">選択</span> ':'';
+    const tag2=i===bestN?' <span class="tag" style="color:var(--accent)">最短</span>':'';
+    mh+=`<tr class="${tags}"><td>${tag1}${i}本${tag2}</td>
+      <td class="num">${fmt(rr.perm)}</td><td class="num">${fmt(rr.perm/60,1)}</td>
+      <td class="num">${fmt(rr.feed/1000,2)}</td><td class="num">${fmt(rr.conc/1000,2)}</td>
+      <td class="num">${rr.perm>=goal?'—':pr.toFixed(2)+' MPa'}</td><td>${jd}</td></tr>`;
+  }
+  document.getElementById('mxRO').innerHTML=mh;
+}
+
+/* ================= EDI ================= */
+const EDI_MODELS=[
+  {id:'XL-060',min:40,max:80,v:'48',cipV:'—',cipP:'—',cipC:'—',dim:'22×56×15',w:'22kg'},
+  {id:'XL-100',min:80,max:150,v:'48',cipV:'60',cipP:'50',cipC:'10',dim:'22×56×17',w:'23kg'},
+  {id:'XL-200',min:100,max:300,v:'100',cipV:'120',cipP:'110',cipC:'25',dim:'22×56×19',w:'25kg'},
+  {id:'XL-300',min:300,max:1000,v:'150',cipV:'200',cipP:'350',cipC:'70',dim:'22×56×26',w:'31kg'},
+  {id:'XL-400',min:600,max:1500,v:'200',cipV:'250–300',cipP:'700',cipC:'120',dim:'22×56×29',w:'35kg'},
+  {id:'XL-500',min:1300,max:2300,v:'300',cipV:'350–380',cipP:'1300',cipC:'220',dim:'22×56×37',w:'42kg'},
+];
+function initEDI(){
+  const sel=document.getElementById('ediModel');
+  sel.innerHTML=EDI_MODELS.map((m,i)=>`<option value="${i}">${m.id}</option>`).join('');
+  sel.value=5;
+  document.getElementById('mxEDI').innerHTML=EDI_MODELS.map((m,i)=>
+    `<tr class="${i===5?'sel':''}"><td>${m.id}</td><td class="num">${m.min.toLocaleString()}–${m.max.toLocaleString()}</td>
+     <td class="num">${m.v} V</td><td class="num">${m.cipV} V</td><td class="num">${m.cipP}</td>
+     <td class="num">${m.cipC}</td><td class="num">${m.dim}</td><td class="num">${m.w}</td></tr>`).join('');
+}
+function calcEDI(){
+  const m=EDI_MODELS[+document.getElementById('ediModel').value];
+  const goal=g('ediGoal'), fce=g('ediFce');
+  const conc=goal*0.10, elec=10, feed=goal+conc+elec;
+  const recov=goal/feed*100;
+  let flags=[];
+  if(goal<m.min) flags.push(['danger',`最低流量未満（${m.min.toLocaleString()} L/h未満は仕格外）。低流量はスケールの温床`]);
+  if(goal>m.max) flags.push(['danger',`最大流量超過（${m.max.toLocaleString()} L/h超）。`]);
+  if(fce>33) flags.push(['danger','給水FCEが上限33μS/cm超過。EDIに負荷が集中します']);
+  else if(fce>9) flags.push(['warn','給水FCEが推奨9μS/cm超過。濃縮室のスケールリスクが高まります']);
+  if(!flags.length) flags.push(['ok','仕様内の運転です']);
+  document.getElementById('judgeEDI').innerHTML=
+    flags.map(f=>`<span class="flag ${f[0]}">${f[0]==='ok'?'仕様内':'要 注 意'}</span><span class="msg">${f[1]}</span>`).join('');
+  document.getElementById('outEDI').innerHTML=`
+    <div class="o"><div class="k">製品水（目標）</div><div class="v">${fmt(goal)} <small>L/h</small></div></div>
+    <div class="o"><div class="k">必要給水量</div><div class="v">${fmt(feed)} <small>L/h</small></div></div>
+    <div class="o"><div class="k">濃縮水量（10%）</div><div class="v">${fmt(conc)} <small>L/h</small></div></div>
+    <div class="o"><div class="k">電極水量</div><div class="v">10 <small>L/h 固定</small></div></div>
+    <div class="o"><div class="k">回収率</div><div class="v">${recov.toFixed(1)} <small>%</small></div></div>
+    <div class="o"><div class="k">推奨電圧</div><div class="v">${m.v} <small>V DC</small></div></div>
+    <div class="o"><div class="k">CIP（洗浄）電圧</div><div class="v">${m.cipV} <small>V DC</small></div></div>
+    <div class="o"><div class="k">流量範囲</div><div class="v" style="font-size:13px">${m.min.toLocaleString()}–${m.max.toLocaleString()} <small>L/h</small></div></div>`;
+  document.querySelectorAll('#mxEDI tr').forEach((tr,i)=>tr.classList.toggle('sel',EDI_MODELS[i]===m));
+}
+
+/* ================= 受水槽 ================= */
+const TANK_SIZES=[100,200,300,500,1000,1500,2000,3000,5000,10000];
+let tmode='always', marg=0.8;
+function setMarg(v){marg=v;
+  document.querySelectorAll('#segMarg button').forEach(b=>b.classList.toggle('active',+b.dataset.v===v));
+  calcTank();}
+function setTmode(v){tmode=v;
+  document.querySelectorAll('#segTmode button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  calcTank();}
+function setFeed(v){document.getElementById('tFeed').value=v;
+  document.querySelectorAll('#segFeed button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  calcTank();}
+function setSupply(v){document.getElementById('tSupply').value=v;calcTank();}
+function applyBucket(){
+  const L=g('tBucketL'),s=g('tBucketS');
+  if(!L||!s){document.getElementById('tBucketOut').textContent='バケツの容量と秒数の両方を入れてね';return;}
+  const q=L*60/s;
+  document.getElementById('tSupply').value=q.toFixed(1);
+  document.getElementById('tBucketOut').innerHTML=`=<b class="mono">${q.toFixed(1)} L/min</b> → 給水能力に反映しました`;
+  calcTank();
+}
+function calcTank(){
+  const feed=g('tFeed'),op=g('tOp'),rawS=g('tSupply'),supH=g('tSupH'),buf=g('tBuf'),eff=g('tEff')/100;
+  const supply=rawS*marg;
+  const dailyN=feed*60*op/1000, dailyS=supply*60*(tmode==='always'?24:supH)/1000;
+  const deficit=Math.max(0,feed-supply);
+  let veff,flag,cls,msg;
+  if(tmode==='always'){
+    if(supply>=feed){veff=0;flag='直 結 可 能';cls='ok';
+      msg=`給水能力（ピーク時見込み <b class="mono">${fmt(supply,1)} L/min</b>）がROの必要給水を上回ります。受水槽は不要です（圧力の変動が激しい場所は100〜300Lの小型タンクで平滑化する選択肢はあり）。`;}
+    else if(dailyS>=dailyN){veff=deficit*buf;flag='タンクで対応可能';cls='ok';
+      msg=`不足する <b class="mono">${fmt(deficit,1)} L/min</b> をタンクがバッファします。バッファ目標 ${buf} 分で有効容量 <b class="mono">${fmt(Math.ceil(veff))} L</b> 必要です。`;}
+    else{veff=deficit*buf;flag='給 水 根 本 不 足';cls='danger';
+      msg=`1日に必要な <b class="mono">${fmt(dailyN,1)} m³</b> に対し給水できるのは <b class="mono">${fmt(dailyS,1)} m³</b>。どんなに大きなタンクを置いても帳尻が合いません。給水の増強（管の太径化・圧力ポンプ・水道契約の変更）が先決です。`;}
+  }else{
+    if(dailyS>=dailyN){veff=feed*60*op;flag='1回分の蓄水で対応可能';cls='ok';
+      msg=`運転時間帯は給水なしの想定で、1回分の水量 <b class="mono">${fmt(Math.ceil(veff))} L</b> をためられるタンクが目安です。給水時間帯にタンクを満たす運用になります。`;}
+    else{veff=feed*60*op;flag='給 水 根 本 不 足';cls='danger';
+      msg=`給水できる ${fmt(dailyS,1)} m³/日 に対し必要なのは ${fmt(dailyN,1)} m³/日。運転時間を短くするか給水時間を延ばすかが必要です。`;}
+  }
+  const nominal=veff<=0?0:TANK_SIZES.find(s=>s>=veff/eff)||Math.ceil(veff/eff/1000)*1000;
+  const stagn=dailyN>0&&nominal>0?nominal/1000/dailyN:0;
+  const rootShort=cls==='danger'&&tmode==='always'; // 常時モードの根本不足＝タンクでは解決不可
+  let extra='';
+  if(nominal>0&&stagn>2) extra=`　<b>ただし滞留 ${fmt(stagn,1)} 日</b>（1〜2日で循環できる量に見直したほうが良い場合があります）。`;
+  document.getElementById('judgeTANK').innerHTML=`<span class="flag ${cls}">${flag}</span><span class="msg">${msg}${extra}</span>`;
+  document.getElementById('tDailyN').innerHTML=`${fmt(dailyN,1)} <small>m³/日</small>`;
+  document.getElementById('tDailyS').innerHTML=`${fmt(dailyS,1)} <small>m³/日</small>`;
+  document.getElementById('tVeff').innerHTML=rootShort?'—':(veff>0?`${fmt(Math.ceil(veff))} <small>L</small>`:'—');
+  document.getElementById('tNominal').innerHTML=rootShort?'増強が先':(nominal>0?`${fmt(nominal)} <small>L</small>`:'不要');
+
+  const runMin=veff>0&&!rootShort?veff/feed:0, refillH=supply>0&&veff>0&&!rootShort?veff/supply/60:0;
+  document.getElementById('outTANK').innerHTML=`
+    <div class="o"><div class="k">給水不足分（ピーク時見込みで判定）</div><div class="v">${fmt(deficit,1)} <small>L/min</small></div></div>
+    <div class="o"><div class="k">ピーク時見込み給水（実測 ${fmt(rawS,1)} × ${marg}）</div><div class="v">${fmt(supply,1)} <small>L/min</small></div></div>
+    <div class="o"><div class="k">満タンから給水ゼロでの連続運転</div><div class="v">${veff>0?fmt(runMin,0):'—'} <small>分</small></div></div>
+    <div class="o"><div class="k">空→満タンへの給水時間</div><div class="v">${refillH>0?fmt(refillH,1):'—'} <small>h</small></div></div>
+    <div class="o"><div class="k">水の滞留日数（規格容量÷1日必要量）</div><div class="v" style="color:${stagn>2?'var(--warn)':'inherit'}">${stagn>0&&!rootShort?fmt(stagn,1):'—'} <small>日</small></div></div>
+    <div class="o"><div class="k">満水時の水の重量</div><div class="v">${nominal>0&&!rootShort?fmt(nominal):'—'} <small>kg（タンク自重は別）</small></div></div>
+    <div class="o"><div class="k">有効率を反映した必要容量</div><div class="v">${veff>0&&!rootShort?fmt(Math.ceil(veff/eff)):'—'} <small>L</small></div></div>`;
+
+  const fh=feed*60, sh=supply*60, mx=Math.max(fh,sh,1);
+  document.getElementById('barsTANK').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div class="barlabel">RO必要給水</div>
+      <div style="flex:1;height:16px;border:var(--line);position:relative">
+        <div style="position:absolute;inset:0;width:${fh/mx*100}%;background:var(--ink)"></div>
+      </div>
+      <div class="mono barval">${fmt(fh)} L/h</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="barlabel">敷地の給水（ピーク時見込み）</div>
+      <div style="flex:1;height:16px;border:var(--line);position:relative">
+        <div style="position:absolute;inset:0;width:${sh/mx*100}%;background:${deficit>0?'var(--warn)':'var(--accent)'}"></div>
+      </div>
+      <div class="mono barval">${fmt(sh)} L/h</div>
+    </div>
+    ${rootShort?`<div style="font-size:11px;margin-top:6px;color:var(--danger)">▲ 不足 ${fmt(deficit,1)} L/min（${fmt(deficit*60)} L/h）はタンクでは解決不可。給水増強が先決</div>`
+      :deficit>0?`<div style="font-size:11px;margin-top:6px;color:var(--warn)">▲ 不足 ${fmt(deficit,1)} L/min（${fmt(deficit*60)} L/h）をタンクの貯水でカバーする</div>`
+      :`<div style="font-size:11px;margin-top:6px;color:var(--accent)">給水能力は十分です</div>`}`;
+}
+
+initEDI();
+calcHW();
+function calcTune(){
+  // ---- RO 診断 ----
+  const fTds=g('tFeedTds'),pTds=g('tPermTds'),tT=g('tTempT'),nT=Math.max(1,Math.round(g('tN'))),
+        pNow=g('tPress'),goalT=g('tGoal'),measT=g('tMeas'),recT=g('rec');
+  const rej=fTds>0?(1-pTds/fTds)*100:0;
+  document.getElementById('tRej').innerHTML=rej.toFixed(1)+'<small> %（目安 90% 以上）</small>';
+  const needP=pRequired(nT,tT,fTds,recT,goalT*60);
+  const gap=needP-pNow;
+  document.getElementById('tNeedP').innerHTML=needP.toFixed(2)+'<small> MPa（回収率'+recT+'%・'+nT+'本で目標'+goalT.toFixed(1)+'L/min）</small>';
+  document.getElementById('tPressGap').innerHTML=(gap<=0?'+':'−')+Math.abs(gap).toFixed(2)+
+    '<small> MPa '+(gap<=0?'余裕あり':'不足')+(needP>4.1?'／但し4.1MPa上限超なので本数増が必要':'')+'</small>';
+  const rT=roCalcCore(nT,pNow,tT,fTds,recT);
+  let healthTxt='—',healthRatio=null;
+  if(measT>0){
+    const implied=Math.max(1,Math.round(measT*60/rT.qElem));
+    const pred=implied*rT.qElem;
+    healthRatio=measT*60/pred*100;
+    healthTxt=healthRatio.toFixed(0)+'%'+(implied!==nT?'（実測は'+implied+'本運転相当）':'');
+  }
+  document.getElementById('tHealth').textContent=healthTxt;
+  const rejBad=rej<90, lowFlow=measT>0&&measT<goalT;
+  const roOK=!rejBad&&!lowFlow;
+  document.getElementById('roJudge').innerHTML=
+    '<span class="flag '+(roOK?'ok':(rejBad&&healthRatio!==null&&healthRatio<75?'danger':'warn'))+'">'+(roOK?'RO は良好':'要確認')+'</span>'+
+    '<span style="font-size:11px">除去率 '+(rejBad?'90%未満':'90%以上クリア')+(measT>0?(lowFlow?'／水量が目標未満':'／水量も目標内'):'')+'</span>';
+
+  // ---- EDI 診断 ----
+  const eCond=g('tECond'),fce=g('tFce'),eFlow=g('tEFlow'),vol=g('tVol'),cur=g('tCur');
+  const res=cur>0?vol/cur:0;
+  document.getElementById('tRes').innerHTML=res>0?res.toFixed(0)+'<small> Ω</small>':'—';
+  const edi=EDI_MODELS[+document.getElementById('ediModel').value];
+  document.getElementById('tEdiModel').innerHTML=edi.id+'<small>（EDIタブで変更）</small>';
+  const flowOut=eFlow>0&&(eFlow<edi.min||eFlow>edi.max);
+  let ediIssues=[];
+  if(eCond>10) ediIssues.push('製品水が現場の管理ライン10μS/cmを超えている（旧樹脂方式の基準。悪化のサイン）');
+  if(fce>33) ediIssues.push('FCE（RO透過水の質）が33μS/cmの許容上限を超えている');
+  else if(fce>9) ediIssues.push('FCEが9μS/cmを超えている（許容内だが水質に余裕がない）');
+  if(res>300) ediIssues.push('抵抗がメーカー典型域（75–300Ω）より高い → スケール・汚れのサイン');
+  else if(res>150) ediIssues.push('抵抗がやや高い（150–300Ω）。経過観察。上がり続けるならCIP検討');
+  else if(res>0&&res<75) ediIssues.push('抵抗が低い（75Ω未満）。給水FCEが高い場合は正常範囲のことも');
+  if(flowOut) ediIssues.push('製品水量が'+edi.id+'のレンジ（'+edi.min.toLocaleString()+'–'+edi.max.toLocaleString()+'L/h）外');
+  // ---- 電源設定目安 ----
+  const vMax=parseFloat(edi.v)||300;
+  let vNote;
+  if(vol<=0) vNote='—';
+  else if(vol>vMax) vNote='<b style="color:var(--danger)">現在の '+vol.toFixed(0)+'V は定格 '+vMax+'V を超えている。</b>'+(edi.cipV!=='—'?'CIP用設定（'+edi.cipV+'V）のまま常用していないか、':'')+'電源の目盛り・測定箇所を確認';
+  else vNote='現在の '+vol.toFixed(0)+'V は定格内';
+  const cipLine=edi.cipV==='—'
+    ?'<div>・<b>高電圧運用はメーカー確認を</b>：'+edi.id+'は仕様表にCIP電圧の記載なし。定格超の運用はメーカーに確認</div>'
+    :'<div>・<b>定格超はCIPだけ</b>：'+edi.cipV+'V・製品水レベルに流量を絞り・濃縮リサイクル15–20%・約1時間×2–3回。常用しない</div>';
+  document.getElementById('powerGuide').innerHTML=
+    '<div>・<b>Vは設定する値</b>：'+edi.id+'の定格は '+vMax+'V。通常は定格近くで連続運転が基本。低くしすぎると樹脂の再生が追いつかず水質が段々落ちる</div>'+
+    '<div>・<b>Aは決まる値</b>：設定しない（メーカー推奨は「電圧を設定して電流はそのまま流す」運用）。XLモジュールの典型は定格電圧で1–4A（給水FCE 2–10μS/cm時。FCEが15–20だと6A級もあり得る）。推奨運転点は約2A＝抵抗約150Ω。抵抗は気温で約2%/℃変わるので同条件での比較が前提</div>'+
+    cipLine+
+    '<div style="margin-top:6px">'+vNote+'</div>';
+  document.getElementById('ediJudge').innerHTML=
+    '<span class="flag '+(ediIssues.length===0?'ok':(eCond>10||res>300?'danger':'warn'))+'">'+(ediIssues.length===0?'EDI は良好':'要対応 '+ediIssues.length+'件')+'</span>'+
+    '<span style="font-size:11px">'+(ediIssues[0]||'製品水・FCE・抵抗・水量ともに基準内')+'</span>';
+
+  // ---- 調整手順（優先順位順）----
+  const steps=[];
+  const add=s=>steps.push(s);
+  // 1) 製品水オーバーは最優先
+  if(eCond>10){
+    add('製品水導電率 '+(eCond.toFixed(2))+'μS/cm は管理ライン10を超えている。メーカー基準ではなく旧樹脂方式からの流用値だが、上がったという事実は変わらないのでRO側を先に確認する');
+    if(rejBad){
+      if(healthRatio!==null&&healthRatio<75) add('RO除去率 '+rej.toFixed(1)+'%・膜の健康度 '+healthRatio.toFixed(0)+'% → 膜の劣化が進んでいる。化学洗浄（CIP）を試して回復しないなら膜交換');
+      else add('RO除去率 '+rej.toFixed(1)+'% が90%未満 → 膜の汚れが考えられる。CIP（低圧循環での薬洗）で回復を確認');
+    } else add('RO除去率 '+rej.toFixed(1)+'% は確保できている → EDI側の調整に進む');
+    if(res>300) add('EDIの抵抗 '+res.toFixed(0)+'Ω はメーカー典型域（75–300Ω）より高い → スケール・汚れの可能性。CIP: '+edi.cipV+'V・製品水レベルに流量を絞り・約1時間×2–3回');
+    if(flowOut) add(edi.id+'の水量レンジ '+edi.min.toLocaleString()+'–'+edi.max.toLocaleString()+'L/h に収める（現在 '+eFlow.toLocaleString()+'L/h）');
+    if(fce>33) add('FCE '+fce.toFixed(1)+'μS/cm はRO透過水の質が悪い。ROの除去率回復を最優先に');
+    if(ediIssues.length===1) add('上記1件だけ該当 → これを解消すれば製品水は戻るはず');
+  } else {
+    // 製品水OK。ROの不調だけ手順化
+    if(rejBad){
+      if(healthRatio!==null&&healthRatio<75) add('除去率 '+rej.toFixed(1)+'%・健康度 '+healthRatio.toFixed(0)+'% → 膜の劣化。CIPで回復しないなら膜交換検討');
+      else add('除去率 '+rej.toFixed(1)+'% → 膜の汚れを疑う。差圧も上がっていればCIP（薬洗）を実施');
+    }
+    if(lowFlow){
+      if(gap>0) add('水量不足は圧力不足が主因の可能性。ポンプ圧を '+(gap).toFixed(2)+'MPa 上げると目標達成の計算（目標 '+needP.toFixed(2)+'MPa）'+(needP>4.1?'。ただし上限4.1MPaを超えるため膜を増本する方が現実的':''));
+      else add('水量不足だが圧力に余裕あり（'+pNow.toFixed(2)+'MPaで目標は'+needP.toFixed(2)+'MPaで達成可能）。膜の汚れ（差圧確認）か給水不足（受水槽タブで收支確認）を疑う');
+    }
+    if(res>300) add('EDIの抵抗 '+res.toFixed(0)+'Ω はメーカー典型域（75–300Ω）より高い → スケール・汚れのサイン。製品水は今のところOKだが、CIP（'+edi.cipV+'V・製品水レベルに流量を絞り・約1時間×2–3回）を計画しておく');
+    else if(res>150) add('EDIの抵抗 '+res.toFixed(0)+'Ω はやや高い（150–300Ω）。経過観察。上がり続けるならCIP検討');
+    else if(res>0&&res<75) add('EDIの抵抗 '+res.toFixed(0)+'Ω は低い。給水FCEが高い場合は正常範囲のことも。気温補正（約2%/℃）も影響する');
+    if(fce>33) add('FCE '+fce.toFixed(1)+'μS/cm は許容上限33を超えている。ROの除去率回復を最優先に');
+    else if(fce>9) add('FCE '+fce.toFixed(1)+'μS/cm は9を超えている。許容内だがROの除去率に余裕がない状態。ROを良好に保つことがEDIの保ち方');
+    if(flowOut) add(edi.id+'の水量レンジ '+edi.min.toLocaleString()+'–'+edi.max.toLocaleString()+'L/h に収める（現在 '+eFlow.toLocaleString()+'L/h）');
+    if(rejBad===false&&lowFlow===false&&!(res>150)&&!(res>0&&res<75)&&fce<=9&&!flowOut) add('RO・EDIともに基準内。現在の設定のまま維持でOK');
+  }
+  document.getElementById('guide').innerHTML=steps.length?
+    '<ol style="margin:0;padding:12px 14px 12px 34px;font-size:12px;line-height:1.9;border-bottom:var(--line)">'+steps.map(s=>'<li>'+s+'</li>').join('')+'</ol>':
+    '<div style="padding:14px;font-size:12px;color:var(--faint);border-bottom:var(--line)">条件を入力すると、ここに優先順位付きの調整手順が出ます</div>';
+}
+/* ================= 設計（水質ベース） ================= */
+let dMode='full';
+function setDMode(m){dMode=m;
+  document.querySelectorAll('#segDMode button').forEach(b=>b.classList.toggle('active',b.dataset.v===m));
+  document.getElementById('dFull').style.display=m==='full'?'':'none';
+  document.getElementById('dSimple').style.display=m==='simple'?'':'none';
+  calcDesign();}
+const MW={ca:40.08,mg:24.31,na:22.99,k:39.10,hco3:61.02,so4:96.06,cl:35.45,no3:62.00};
+function designWater(){
+  // 返す: {cat,an,meqCat,meqAn,tds,hard,alk,sio2,ph,temp,caM,mgM,naM,kM,hco3M,so4M,clM,no3M}
+  const sio2=g('dSio2'),ph=g('dPh'),temp=g('dTemp');
+  if(dMode==='full'){
+    const ca=g('dCa'),mg=g('dMg'),na=g('dNa'),k=g('dK'),hco3=g('dHco3'),so4=g('dSo4'),cl=g('dCl'),no3=g('dNo3');
+    const meqCat=ca/MW.ca*2+mg/MW.mg*2+na/MW.na+k/MW.k*1;
+    const meqAn=hco3/MW.hco3*1+so4/MW.so4*2+cl/MW.cl*1+no3/MW.no3*1;
+    const tds=ca+mg+na+k+hco3+so4+cl+no3+sio2;
+    return {mode:'full',ca,mg,na,k,hco3,so4,cl,no3,sio2,ph,temp,meqCat,meqAn,tds,
+      hard:ca*2.5+mg*4.12, caH:ca*2.5, alk:hco3*50/61.02};
+  }else{
+    const tds=g('dTds'),hard=g('dHard'),alk=g('dAlk');
+    return {mode:'simple',sio2,ph,temp,tds,hard,caH:hard*0.75,alk,
+      meqCat:hard/50+tds*0.5/22.99, meqAn:alk/50+(tds-hard)*0.7/35.45}; // おおまかな収支表示用
+  }
+}
+function piStrict(w){ // MPa（供給水側）
+  let mol=0;
+  if(w.mode==='full') mol=w.ca/MW.ca+w.mg/MW.mg+w.na/MW.na+w.k/MW.k+w.hco3/MW.hco3+w.so4/MW.so4+w.cl/MW.cl+w.no3/MW.no3;
+  else mol=w.tds/58.44*2; // NaCl換算
+  return mol*1e-3*0.08314*(w.temp+273.15)/10; // mmol→mol、bar→MPa
+}
+function lsiAt(w,cf){ // 濃縮倍率cfでのLSI（pHは供給水のまま＝やや楽観的）
+  const tdsC=w.tds*cf, caHC=w.caH*cf, alkC=w.alk*cf;
+  const A=(Math.log10(tdsC)-1)/10, B=-13.12*Math.log10(w.temp+273.15)+34.55;
+  const C=Math.log10(caHC)-0.4, D=Math.log10(alkC);
+  return w.ph-(9.3+A+B-C-D);
+}
+function caso4SR(w,cf){ // 硫酸カルシウム飽和度（25℃基準 Ksp=2.4e-5）
+  if(w.mode!=='full') return null;
+  const caC=w.ca*cf/1000/MW.ca, so4C=w.so4*cf/1000/MW.so4;
+  return caC*so4C/2.4e-5;
+}
+// ========== 薬注・構成・イオン活量（設計拡張） ==========
+let stageMode='1';
+function setStage(v){
+  stageMode=v;
+  document.querySelectorAll('#segStage button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  const box=document.getElementById('stage2Inputs');
+  if(box) box.style.display=(v==='1')?'none':'block';
+  const pass=(v==='2pass'), three=(v==='3');
+  const L=(id,txt)=>{const e=document.getElementById(id); if(e) e.textContent=txt;};
+  L('dN1L', pass?'1パス目 本数（列数）':(three?'1段目 本数（列数）':'1段目 本数（列数）'));
+  L('dRec1L', pass?'1パス目回収率（%）':'1段目回収率（%）');
+  L('dN2L', pass?'2パス目 本数（列数）':'2段目 本数（列数）');
+  L('dRec2L', pass?'2パス目回収率（%）':'2段目回収率（%）');
+  for(const id of ['rowN3','rowRec3']){
+    const e=document.getElementById(id);
+    if(e) e.style.display=three?'block':'none';
+  }
+  calcDesign();
+}
+function getAntiLimits(){
+  const sel=document.getElementById('dAnti');
+  const a=sel?sel.value:'none';
+  if(a==='weak') return {lsi:0.5,caso4:1.5,sio2:120,name:'弱め'};
+  if(a==='std') return {lsi:1.8,caso4:2.5,sio2:150,name:'標準'};
+  if(a==='strong') return {lsi:2.5,caso4:4.0,sio2:180,name:'強め'};
+  return {lsi:0.0,caso4:1.0,sio2:100,name:'なし'};
+}
+function ionicStrength(w){ // mol/L
+  if(w.mode!=='full') return w.tds*2.5e-5;
+  return 0.5*(w.ca/MW.ca*4+w.mg/MW.mg*4+w.na/MW.na+w.k/MW.k+w.hco3/MW.hco3+w.so4/MW.so4*4+w.cl/MW.cl+w.no3/MW.no3)/1000;
+}
+function activityCoeff(I,z){ // Davies式（25℃）
+  if(I<=0) return 1;
+  const sq=Math.sqrt(I);
+  return Math.pow(10,-0.51*z*z*(sq/(1+sq)-0.3*I));
+}
+function lsiImproved(w,cf){ // 濃度ベースLSIのCa項を活量で補正（高濃縮ほど実際は析出しにくい方向へ）
+  const g2=activityCoeff(ionicStrength(w)*cf,2);
+  const tdsC=w.tds*cf, caHC=w.caH*cf*g2, alkC=w.alk*cf;
+  const A=(Math.log10(Math.max(tdsC,1))-1)/10, B=-13.12*Math.log10(w.temp+273.15)+34.55;
+  const C=Math.log10(Math.max(caHC,0.1))-0.4, D=Math.log10(Math.max(alkC,0.1));
+  return w.ph-(9.3+A+B-C-D);
+}
+function caso4Improved(w,cf){ // 活量積/Ksp（25℃ Ksp=2.4e-5）
+  if(w.mode!=='full') return null;
+  const g2=activityCoeff(ionicStrength(w)*cf,2);
+  const caC=w.ca*cf/1000/MW.ca*g2, so4C=w.so4*cf/1000/MW.so4*g2;
+  return caC*so4C/2.4e-5;
+}
+function calcMaxRecovery(w,lim){ // 30→85%で昇順スキャン。合格した最大rと、不合格になった因子
+  let maxR=null,limiter='';
+  for(let r=30;r<=85;r++){
+    const c=1/(1-r/100),L=lsiImproved(w,c),S=caso4Improved(w,c),Si=w.sio2*c;
+    if(L<=lim.lsi&&(S===null||S<=lim.caso4)&&Si<=lim.sio2) maxR=r;
+    else{limiter=[L>lim.lsi?'炭酸カルシウム（LSI）':null,S>lim.caso4?'硫酸カルシウム':null,Si>lim.sio2?'シリカ':null].filter(Boolean).join('・');break;}
+  }
+  return {maxR,limiter};
+}
+function calcMultiStage(w){
+  if(stageMode==='1'||!w) return null;
+  const gv=id=>parseFloat(document.getElementById(id).value)||0;
+  const lim=getAntiLimits();
+  if(stageMode==='2pass'){
+    const n1=gv('dN1'),r1=gv('dRec1')/100,n2=gv('dN2'),r2=gv('dRec2')/100;
+    return {type:'2パス',notation:n1+'-'+n2,overall:r1*r2,limits:lim,stages:[
+      {name:'1パス',n:n1,cf:1/(1-r1),lsi:lsiImproved(w,1/(1-r1)),sr:caso4Improved(w,1/(1-r1)),sio:w.sio2/(1-r1)},
+      {name:'2パス',n:n2,cf:1/(1-r2),lsi:lsiImproved(w,1/(1-r2)),sr:caso4Improved(w,1/(1-r2)),sio:w.sio2/(1-r2)}]};
+  }
+  const n1=gv('dN1'),r1=gv('dRec1')/100,n2=gv('dN2'),r2=gv('dRec2')/100;
+  let n3=0,r3=0;
+  if(stageMode==='3'){n3=gv('dN3'); r3=gv('dRec3')/100;}
+  const cf1=1/(1-r1);
+  const cf2=cf1/(1-r2);
+  const stages=[
+    {name:'1段目',n:n1,cf:cf1,lsi:lsiImproved(w,cf1),sr:caso4Improved(w,cf1),sio:w.sio2*cf1},
+    {name:'2段目',n:n2,cf:cf2,lsi:lsiImproved(w,cf2),sr:caso4Improved(w,cf2),sio:w.sio2*cf2}];
+  let overall=1-(1-r1)*(1-r2), notation=n1+'-'+n2, type='2段';
+  if(stageMode==='3'){
+    const cf3=cf2/(1-r3);
+    stages.push({name:'3段目',n:n3,cf:cf3,lsi:lsiImproved(w,cf3),sr:caso4Improved(w,cf3),sio:w.sio2*cf3});
+    overall=1-(1-r1)*(1-r2)*(1-r3); notation=n1+'-'+n2+'-'+n3; type='3段';
+  }
+  return {type,notation,overall,limits:lim,stages};
+}
+function renderMultiStage(ms){
+  const el=document.getElementById('dMulti');
+  if(!el) return;
+  if(!ms){el.style.display='none';el.innerHTML='';return;}
+  el.style.display='';
+  let html=`<div class="o" style="grid-column:1/-1"><div class="k">${ms.type}構成（${ms.notation}）</div><div class="v">全体回収率 ${(ms.overall*100).toFixed(1)} <small>%</small></div></div>`;
+  ms.stages.forEach(st=>{
+    const lsiBad=st.lsi>ms.limits.lsi, srBad=st.sr!==null&&st.sr>ms.limits.caso4, sioBad=st.sio>ms.limits.sio2;
+    html+=`
+    <div class="o"><div class="k">${st.name}（${st.n}本）濃縮倍数</div><div class="v">${st.cf.toFixed(2)} <small>倍</small></div></div>
+    <div class="o"><div class="k">${st.name} LSI</div><div class="v" style="color:${lsiBad?'var(--danger)':'var(--accent)'}">${st.lsi>0?'+':''}${st.lsi.toFixed(2)}</div></div>
+    <div class="o"><div class="k">${st.name} CaSO₄</div><div class="v" style="color:${srBad?'var(--danger)':'inherit'}">${st.sr!==null?st.sr.toFixed(2):'簡易非対応'}</div></div>
+    <div class="o"><div class="k">${st.name} シリカ</div><div class="v" style="color:${sioBad?'var(--danger)':'inherit'}">${Math.round(st.sio)} <small>mg/L</small></div></div>`;
+  });
+  html+=`<div class="o" style="grid-column:1/-1"><div class="k">判定基準</div><div class="v" style="font-size:11.5px">薬注「${ms.limits.name}」：LSI +${ms.limits.lsi}・CaSO₄ ${ms.limits.caso4}・シリカ ${ms.limits.sio2} mg/L まで許容。${ms.type==='2パス'?'各パスは独立に濃縮される':'各段の入口濃度で評価（段内変化は省略＝やや保守的）'}</div></div>`;
+  el.innerHTML=html;
+}
+function calcDesign(){
+  const w=designWater();
+  const R=g('dRec')/100, cf=1/(1-R);
+  document.getElementById('dRecV').textContent=g('dRec')+' %';
+  // ---- イオン収支・サマリー ----
+  let flags=[];
+  if(w.mode==='full'){
+    const err=Math.abs(w.meqCat-w.meqAn)/((w.meqCat+w.meqAn)/2)*100;
+    if(err>5) flags.push(['danger',`イオン収支のずれ ${err.toFixed(1)}%。水質データの再確認を（Ca/MgまたはHCO₃/Clの入れ違いが多い）`]);
+    else if(err>2) flags.push(['warn',`イオン収支のずれ ${err.toFixed(1)}%。微小なので使用可能`]);
+    else flags.push(['ok',`イオン収支OK（ずれ ${err.toFixed(1)}%）。水質データは信頼できる`]);
+  }else flags.push(['ok','簡易モード（イオン収支チェックはなし）']);
+  document.getElementById('dJudge').innerHTML=flags.map(f=>`<span class="flag ${f[0]}">${f[0]==='ok'?'水質OK':'要確認'}</span><span class="msg">${f[1]}</span>`).join('');
+  document.getElementById('dSummary').innerHTML=`
+    <div class="o"><div class="k">計算TDS</div><div class="v">${fmt(w.tds)} <small>mg/L</small></div></div>
+    <div class="o"><div class="k">総硬度</div><div class="v">${fmt(w.hard)} <small>mg/L as CaCO₃</small></div></div>
+    <div class="o"><div class="k">アルカリ度</div><div class="v">${fmt(w.alk)} <small>mg/L as CaCO₃</small></div></div>
+    <div class="o"><div class="k">シリカ</div><div class="v">${fmt(w.sio2,1)} <small>mg/L</small></div></div>`;
+  // ---- 浸透水圧 ----
+  const ps=piStrict(w), psimp=w.tds/1000*0.08;
+  document.getElementById('dPiStrict').innerHTML=ps.toFixed(4)+'<small> MPa</small>';
+  document.getElementById('dPiSimple').innerHTML=psimp.toFixed(4)+`<small> MPa（厳密値より ${(psimp/ps).toFixed(2)} 倍。炭酸塩主体の水ほど近似は過大になり、ROタブの水量はやや保守的）</small>`;
+  // ---- 濃縮側（活量補正・薬注基準） ----
+  const lim=getAntiLimits();
+  const lsi=lsiImproved(w,cf), sr=caso4Improved(w,cf), sio2C=w.sio2*cf;
+  const lsiBad=lsi>lim.lsi, srBad=sr!==null&&sr>lim.caso4, sioBad=sio2C>lim.sio2;
+  const cfMsg=lsiBad||srBad||sioBad?
+    `<span class="flag danger">濃縮側で垢リスク</span><span class="msg">${[lsiBad?'炭酸カルシウム（LSI '+lsi.toFixed(2)+'）':null,srBad?'硫酸カルシウム（飽和度 '+sr.toFixed(1)+'）':null,sioBad?'シリカ（濃縮時 '+fmt(sio2C,0)+' mg/L）':null].filter(Boolean).join('、')}の析出リスク。回収率を下げるか前処理・薬注の検討を</span>`:
+    `<span class="flag ok">濃縮側OK</span><span class="msg">回収率 ${(R*100).toFixed(0)}% の濃縮側（濃縮倍数 ${cf.toFixed(2)}）では、薬注「${lim.name}」基準（LSI +${lim.lsi}・CaSO₄ ${lim.caso4}・シリカ ${lim.sio2}）内に収まっている</span>`;
+  document.getElementById('dConcJudge').innerHTML=cfMsg;
+  document.getElementById('dConc').innerHTML=`
+    <div class="o"><div class="k">濃縮倍数</div><div class="v">${cf.toFixed(2)} <small>倍</small></div></div>
+    <div class="o"><div class="k">濃縮側TDS</div><div class="v">${fmt(w.tds*cf)} <small>mg/L</small></div></div>
+    <div class="o"><div class="k">LSI（炭酸カルシウム）</div><div class="v" style="color:${lsiBad?'var(--danger)':'var(--accent)'}">${lsi>0?'+':''}${lsi.toFixed(2)}</div></div>
+    <div class="o"><div class="k">CaSO₄ 飽和度</div><div class="v" style="color:${srBad?'var(--danger)':'inherit'}">${sr===null?'簡易モード非対応':sr.toFixed(2)}</div></div>
+    <div class="o"><div class="k">濃縮側シリカ</div><div class="v" style="color:${sioBad?'var(--danger)':'inherit'}">${fmt(sio2C,0)} <small>mg/L（許容 ${lim.sio2}）</small></div></div>
+    <div class="o"><div class="k">濃縮側硬度</div><div class="v">${fmt(w.hard*cf)} <small>mg/L as CaCO₃</small></div></div>`;
+  // ---- 最大回収率（活量補正・薬注基準） ----
+  const mr=calcMaxRecovery(w,lim);
+  const maxR=mr.maxR, limiter=mr.limiter;
+  // ---- 多段構成 ----
+  renderMultiStage(calcMultiStage(w));
+  document.getElementById('dMaxR').innerHTML=`
+    <div class="o" style="grid-column:1/-1"><div class="k">判定条件</div><div class="v" style="font-size:11.5px">薬注「${lim.name}」＋活量補正（Davies）での推算</div></div>
+    <div class="o"><div class="k">最大許容回収率（推算）</div><div class="v" style="color:${maxR!==null?'var(--accent)':'var(--danger)'}">${maxR!==null?maxR+' <small>%</small>':'50% 超過'}</div></div>
+    <div class="o"><div class="k">制限因子</div><div class="v" style="font-size:13px">${maxR===85?'制限なし（85%以上も可能性あり）':maxR!==null?(85>maxR?limiter+'が上限':'—'):limiter+'（軟水器併用で緩和）'}</div></div>
+    <div class="o"><div class="k">現在の設計回収率との差</div><div class="v">${maxR!==null?(maxR>=g('dRec')?'余裕あり':'+ '+(g('dRec')-maxR)+' <small>% 超過</small>'):'50% 以下へ下げる'}</div></div>
+    <div class="o"><div class="k">参考：軟水器併用時</div><div class="v" style="font-size:12px">硬度除去でLSI・CaSO₄の上限は大きく緩和される。シリカが最終的な天井</div></div>`;
+  // ---- CO₂ ----
+  let co2mg=0;
+  if(w.alk>0&&w.ph<8.3) co2mg=w.alk/50*44.01*Math.pow(10,6.35-w.ph);
+  const co2Bad=co2mg>10;
+  document.getElementById('dCo2Judge').innerHTML=co2mg<=0?
+    `<span class="flag ok">CO₂はほぼなし</span><span class="msg">pH ${w.ph.toFixed(1)} なほぼCO₂は炭酸水素に変わっており、EDI給水の導電率負担は小さい</span>`:
+    co2Bad?`<span class="flag warn">CO₂ ${co2mg.toFixed(0)} mg/L</span><span class="msg">ROはCO₂（気体）を除去しない。このままEDIへ入るとFCEが押し上げられる。脱気またはpH調整の検討を</span>`:
+    `<span class="flag ok">CO₂ 少量</span><span class="msg">${co2mg.toFixed(1)} mg/L。大きな問題ではないが、FCEに余裕がないときは注意</span>`;
+  document.getElementById('dCo2').innerHTML=`
+    <div class="o"><div class="k">遊離CO₂（pH・アルカリ度から推算）</div><div class="v">${co2mg.toFixed(1)} <small>mg/L</small></div></div>
+    <div class="o"><div class="k">脱気・pH調整でのFCE改善見込み</div><div class="v" style="font-size:14px">約 −${co2mg.toFixed(0)} <small>μS/cm（CO₂ mg/L ≒ μS/cm の目安）</small></div></div>
+    <div class="o"><div class="k">pH調整の考え方</div><div class="v" style="font-size:11.5px">NaOH等でpHを8.3前後に上げるとCO₂→HCO₃化されROで除去される</div></div>
+    <div class="o"><div class="k">脱気の考え方</div><div class="v" style="font-size:11.5px">膜脱気・真空脱気でCO₂を物理除去。pHを変えないのが利点</div></div>`;
+  // ---- 前処理の推奨構成（水質から各ユニットを判定＋根拠） ----
+  const src=(document.getElementById('dSource')||{value:'tap'}).value;
+  const turb=parseFloat((document.getElementById('dTurb')||{}).value)||0;
+  const cl2=parseFloat((document.getElementById('dCl2')||{}).value)||0;
+  const UN=[]; // [verdict, unit, reason] verdict: 必須/推奨/検討/不要
+  // 活性炭
+  if(src==='tap'||cl2>0.1) UN.push(['必須','活性炭','水道水は残留塩素を含み、遊離塩素は複合RO膜を酸化劣化させる。膜メーカー基準で給水遊離塩素は連続 0.1 mg/L まで。塩素は活性炭で脱離（還元）される']);
+  else if(src==='well') UN.push(['検討','活性炭','井戸水でも臭気・TOC・一部の有機物があるなら有効。臭みがなければ省略可']);
+  else UN.push(['検討','活性炭','湖・河川水はTOC・臭気の源。活性炭は膜の有機物汚染対策にも']);
+  // 凝集・砂ろ過
+  if(turb>1) UN.push(['推奨','凝集（PAC）＋砂ろ過','濁度 '+turb+' NTU。膜メーカーの保証条件は濁度 1 NTU 未満・SDI 5 以下。高濁度は膜の物理的詰まり（fouling）の直接原因']);
+  else if(src==='well') UN.push(['検討','砂ろ過','井戸水で濁度が時々上がるなら保安用に。濁度が安定して低ければ精密フィルタのみでも可']);
+  else if(src==='other') UN.push(['検討','凝集＋砂ろ過','河川・湖水は濁度・SDIが変動しやすい。原水の性状確認を']);
+  // 軟水器
+  if(w.hard>100&&maxR!==null&&maxR<g('dRec')) UN.push(['推奨','軟水器（Na形強酸性樹脂）','硬度 '+fmt(w.hard)+' mg/L as CaCO₃で、推算上限 '+maxR+'% が設計 '+g('dRec')+'% に届かない（'+limiter+'制限）。硬度除去でLSI・CaSO₄の天井が上がり回収率の選択肢が広がる']);
+  else if(w.hard>100) UN.push(['検討','軟水器（Na形強酸性樹脂）','硬度 '+fmt(w.hard)+' mg/L as CaCO₃。回収率を上げたり薬注なし運用を狙うなら有効。塩化Naでの再生管理が必要']);
+  else UN.push(['不要','軟水器','硬度 '+fmt(w.hard)+' mg/L as CaCO₃と低く、炭酸カルシウム・硫酸カルシウムのリスクは小さい']);
+  // 脱気
+  if(co2mg>10) UN.push(['推奨','脱気（膜脱気・真空脱気）','遊離CO₂ '+co2mg.toFixed(1)+' mg/L はROを透過してEDIのFCEを約 '+co2mg.toFixed(0)+' μS/cm 押し上げる。脱気で物理除去すればFCEがその分下がる']);
+  else if(co2mg>0) UN.push(['検討','脱気（膜脱気・真空脱気）','CO₂ '+co2mg.toFixed(1)+' mg/L。FCEに余裕があれば不要']);
+  else UN.push(['不要','脱気','遊離CO₂はほぼなし']);
+  // pH調整
+  if(co2mg>10) UN.push(['検討','pH調整（NaOH注入）','pHを8.3前後に上げるとCO₂→HCO₃⁻化されROで除去できる。ただし炭酸カルシウム系のLSIは上がる方向のため、軟水器・薬注との併用設計が前提。薬注コストとの比較検討を']);
+  // 精密フィルタ
+  UN.push(['必須','精密フィルタ（カートリッジ 5μm）','常設。膜メーカーの保証条件（濁度・SDI）の最終ガード。活性炭の炭粉・軟水樹脂の破砕粉もここで捕捉']);
+  // 薬注
+  if(lim.name==='なし'&&maxR!==null&&maxR<g('dRec')) UN.push(['推奨','薬注（スケールインヒビター）','設計 '+g('dRec')+'% が薬注なし基準（上限 '+maxR+'%）を超える。インヒビターで LSI・CaSO₄ の許容が緩和される（上の選択でシミュレーション可）。最終確認は薬注メーカーの投影ソフトで']);
+  else if(lim.name==='なし') UN.push(['検討','薬注（スケールインヒビター）','現状は設計回収率内に収まっている。運転コスト・排水の薬剤負荷との兼ね合いで判断を']);
+  else UN.push(['選択中','薬注（スケールインヒビター）','「'+lim.name+'」基準でシミュレーション中（LSI +'+lim.lsi+'・CaSO₄ '+lim.caso4+'・シリカ '+lim.sio2+' まで許容）。実際の上限は薬注メーカー資料で確認を']);
+  // フロー行
+  const flow=['活性炭','軟水器','脱気','精密フィルタ（5μm）'].filter(u=>!UN.find(x=>x[1].indexOf(u.split('（')[0])===0&&x[0]==='不要'));
+  const stageTxt=stageMode==='1'?'RO':stageMode==='2pass'?'RO（2パス）':'RO（'+stageMode+'段）';
+  let html='<div style="font-weight:600;margin-bottom:6px">推奨フロー目安：原水 → '+flow.join(' → ')+' → '+stageTxt+' → EDI</div>';
+  const badge={'必須':'danger','推奨':'warn','検討':'','不要':'ok','選択中':'warn'};
+  html+='<ol style="margin:0;padding-left:20px">'+UN.map(u=>'<li><span class="flag '+badge[u[0]]+'" style="margin-right:6px">'+u[0]+'</span><b>'+u[1]+'</b>：'+u[2]+'</li>').join('')+'</ol>';
+  document.getElementById('dPretreat').innerHTML=html;
+}
+function applyToRO(){
+  const w=designWater();
+  document.getElementById('tds').value=Math.round(w.tds);
+  document.getElementById('t').value=g('dTemp');
+  calcRO();
+  switchTab('RO');
+}
+calcRO();
+calcEDI();
+calcTank();
+calcTune();
+calcDesign();
+</script>
+</body>
+</html>
